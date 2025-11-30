@@ -1,11 +1,11 @@
 /**
  * Root Layout
  * 
- * Main application layout with navbar, footer, and global styling.
+ * Main application layout - updated for light theme.
  */
 
 import type { Metadata } from 'next'
-import { Navbar, Footer, Snowfall } from '@/components'
+import { Navbar, Footer } from '@/components'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -34,15 +34,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className="min-h-screen flex flex-col">
-        {/* Snowfall background effect */}
-        <Snowfall count={40} />
-
+      <body className="min-h-screen flex flex-col bg-white">
         {/* Navigation */}
         <Navbar />
 
         {/* Main content */}
-        <main className="flex-grow pt-16 md:pt-20 relative z-10">
+        <main className="flex-grow">
           {children}
         </main>
 

@@ -2,7 +2,7 @@
  * Button Component
  * 
  * Reusable button with multiple variants and sizes.
- * Supports magical Christmas-themed styling.
+ * Updated with red primary style.
  */
 
 import { cn } from '@/lib/utils'
@@ -17,7 +17,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading, children, disabled, ...props }, ref) => {
     const baseStyles = `
-      inline-flex items-center justify-center
+      inline-flex items-center justify-center gap-2
       font-body font-semibold
       rounded-full
       transition-all duration-300 ease-out
@@ -31,8 +31,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         bg-santa-red text-white
         hover:bg-santa-red-dark
         focus:ring-santa-red
-        shadow-lg shadow-santa-red/30
-        hover:shadow-xl hover:shadow-santa-red/40
+        shadow-lg shadow-santa-red/25
+        hover:shadow-xl hover:shadow-santa-red/30
       `,
       secondary: `
         bg-forest-green text-white
@@ -43,14 +43,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       `,
       outline: `
         bg-transparent
-        border-2 border-snow-cream text-snow-cream
-        hover:bg-snow-cream/10
-        focus:ring-snow-cream
+        border-2 border-white text-white
+        hover:bg-white/10
+        focus:ring-white
       `,
       ghost: `
-        bg-transparent text-snow-cream
-        hover:bg-snow-cream/10
-        focus:ring-snow-cream
+        bg-transparent text-gray-600
+        hover:bg-gray-100
+        focus:ring-gray-300
       `,
       gold: `
         bg-gradient-to-r from-gold-dark via-gold to-gold-light
