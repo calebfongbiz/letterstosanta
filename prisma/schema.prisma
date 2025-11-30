@@ -1,0 +1,125 @@
+// This is your Prisma schema file
+// Learn more at: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // Used for migrations (optional, for connection pooling setups)
+}
+
+// ===========================================
+// ENUMS
+// ===========================================
+
+// Subscription tiers for the Letters to Santa service
+// FREE: Basic letter submission with email updates only
+// TRACKER: Includes visual flight-style tracker
+// EXPERIENCE: Full package with Santa letter and certificate
+enum LetterTier {
+  FREE
+  TRACKER
+  EXPERIENCE
+}
+
+// Milestone locations for the letter's journey to Santa
+// These appear in order on the tracker timeline
+enum Milestone {
+  ELF_SORTING_STATION
+  CANDY_CANE_FOREST
+  REINDEER_RUNWAY
+  AURORA_GATE
+  SANTAS_DESK
+  NORTH_POLE_WORKSHOP
+}
+
+// ===========================================
+// MODELS
+// ===========================================
+
+// Customer represents a parent/guardian who creates letters for their children
+// Auth is passcode-based (not full email/password) for simplicity
+model Customer {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Parent information
+  firstName String
+  lastName  String
+  email     String @unique
+
+  // Simple auth: bcrypt-hashed passcode (4-6 digits or short string)
+  passcodeHash String
+
+  // Subscription info
+  tier               LetterTier @default(FREE)
+  extraChildrenCount Int        @default(0)
+
+  // Relations
+  children Child[]
+
+  // Index for faster login lookups (case-insensitive lastName search + passcode)
+  @@index([lastName])
+}
+
+// Child represents each child that has a letter and tracker
+model Child {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Parent relationship
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId String
+
+  // Child information
+  name String
+  age  Int
+
+  // Unique tracker ID for the flight-style tracker URL
+  // Format: lowercase alphanumeric, generated as cuid or uuid
+  trackerId String @unique
+
+  // Current journey progress
+  currentMilestone Milestone @default(ELF_SORTING_STATION)
+  milestoneIndex   Int       @default(0)
+
+  // Current story text shown on tracker (set by Make.com webhook)
+  currentStoryText String?
+
+  // Relations
+  letter Letter?
+
+  @@index([trackerId])
+  @@index([customerId])
+}
+
+// Letter contains the actual letter content and response materials
+model Letter {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Child relationship (one letter per child)
+  child   Child  @relation(fields: [childId], references: [id], onDelete: Cascade)
+  childId String @unique
+
+  // Letter content from parent/child
+  letterText    String  // Main letter to Santa
+  wishlist      String? // What they want for Christmas
+  goodThings    String? // Good things they've done this year
+  petsAndFamily String? // Info about pets and family members
+
+  // Optional uploaded photo of handwritten letter
+  photoUrl String?
+
+  // Response materials (populated by Make.com for EXPERIENCE tier)
+  santaLetterPdfUrl      String? // URL to personalized Santa reply PDF
+  niceListCertificateUrl String? // URL to Nice List certificate PDF
+
+  @@index([childId])
+}
