@@ -56,6 +56,7 @@ export default async function DashboardPage() {
   const canAccessSantaLetter = hasSantaLetterAccess(customer.tier)
 
   return (
+    <div className="min-h-screen bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#1a1a2e] pt-20">
     <SectionContainer size="md">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
@@ -235,6 +236,7 @@ export default async function DashboardPage() {
         )}
       </div>
     </SectionContainer>
+    </div>
   )
 }
 

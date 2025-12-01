@@ -9,6 +9,7 @@ import { Button, Card, SectionContainer } from '@/components'
 
 export default function ThankYouPage() {
   return (
+    <div className="min-h-screen bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#1a1a2e] pt-20">
     <SectionContainer size="md">
       <div className="max-w-2xl mx-auto text-center">
         {/* Success animation */}
@@ -84,6 +85,7 @@ export default function ThankYouPage() {
         </div>
       </div>
     </SectionContainer>
+    </div>
   )
 }
 

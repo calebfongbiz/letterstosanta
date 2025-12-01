@@ -52,6 +52,7 @@ export default function TrackerLoginPage() {
   }
 
   return (
+    <div className="min-h-screen bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#1a1a2e] pt-20">
     <SectionContainer size="md">
       <div className="max-w-md mx-auto">
         {/* Header */}
@@ -124,5 +125,6 @@ export default function TrackerLoginPage() {
         </div>
       </div>
     </SectionContainer>
+    </div>
   )
 }

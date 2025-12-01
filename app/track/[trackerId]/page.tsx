@@ -50,6 +50,7 @@ export default async function TrackerPage({ params }: TrackerPageProps) {
   const canAccessSantaLetter = hasSantaLetterAccess(child.customer.tier)
 
   return (
+    <div className="min-h-screen bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#1a1a2e] pt-20">
     <SectionContainer size="lg">
       <div className="max-w-4xl mx-auto">
         {/* Back button */}
@@ -191,5 +192,6 @@ export default async function TrackerPage({ params }: TrackerPageProps) {
         </Card>
       </div>
     </SectionContainer>
+    </div>
   )
 }
