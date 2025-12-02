@@ -11,6 +11,7 @@ import { getSession } from '@/lib/session'
 import { db } from '@/lib/db'
 import { Button, Card, SectionContainer } from '@/components'
 import { MILESTONE_DATA, hasTrackerAccess, hasSantaLetterAccess, type Milestone } from '@/lib/types'
+import { UpgradeButtons } from './UpgradeButtons'
 
 // Child type for dashboard display
 interface DashboardChild {
@@ -73,33 +74,29 @@ export default async function DashboardPage() {
           <LogoutButton />
         </div>
 
-        {/* Tier info */}
-        <Card variant="glass" className="p-4 mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">
-              {customer.tier === 'FREE' ? '📧' : customer.tier === 'TRACKER' ? '✈️' : '🎅'}
-            </span>
-            <div>
-              <p className="font-semibold text-snow-cream">
-                {customer.tier === 'FREE'
-                  ? 'Letter to Santa'
-                  : customer.tier === 'TRACKER'
-                  ? "Santa's Tracker"
-                  : 'The Santa Experience'}
-              </p>
-              <p className="text-snow-cream/50 text-sm">
-                {customer.children.length} child{customer.children.length !== 1 ? 'ren' : ''}
-              </p>
+        {/* Tier info with upgrade options */}
+        <Card variant="glass" className="p-4 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">
+                {customer.tier === 'FREE' ? '📧' : customer.tier === 'TRACKER' ? '✈️' : '🎅'}
+              </span>
+              <div>
+                <p className="font-semibold text-snow-cream">
+                  {customer.tier === 'FREE'
+                    ? 'Letter to Santa'
+                    : customer.tier === 'TRACKER'
+                    ? "Santa's Tracker"
+                    : 'The Santa Experience'}
+                </p>
+                <p className="text-snow-cream/50 text-sm">
+                  {customer.children.length} child{customer.children.length !== 1 ? 'ren' : ''}
+                </p>
+              </div>
             </div>
-          </div>
 
-          {customer.tier === 'FREE' && (
-            <Link href="/#pricing">
-              <Button variant="gold" size="sm">
-                Upgrade
-              </Button>
-            </Link>
-          )}
+            <UpgradeButtons customerId={customer.id} currentTier={customer.tier} />
+          </div>
         </Card>
 
         {/* Children list */}
@@ -209,11 +206,7 @@ export default async function DashboardPage() {
                             </Button>
                           </Link>
                         ) : (
-                          <Link href="/#pricing">
-                            <Button variant="outline" size="md">
-                              🔒 Unlock Tracker
-                            </Button>
-                          </Link>
+                          <UpgradeButtons customerId={customer.id} currentTier={customer.tier} showUnlock />
                         )}
                       </div>
                     </div>
