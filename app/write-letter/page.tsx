@@ -153,7 +153,7 @@ export default function WriteLetterPage() {
       passcode,
       children: children.map((c) => ({
         name: c.name,
-        age: c.age,
+        age: parseInt(c.age, 10),
         letterText: c.letterText,
         wishlist: c.wishlist || null,
         goodThings: c.goodThings || null,
