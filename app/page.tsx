@@ -182,7 +182,7 @@ function TrustBar() {
 }
 
 // ============================================
-// HOW IT WORKS
+// HOW IT WORKS (with video)
 // ============================================
 function HowItWorksSection() {
   const steps = [
@@ -211,7 +211,44 @@ function HowItWorksSection() {
             How the Magic Works
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Three simple steps to create an unforgettable Christmas experience
+            Watch our quick video to see how Letters to Santa creates unforgettable Christmas memories
+          </p>
+        </div>
+
+        {/* Video Section */}
+        <div className="max-w-4xl mx-auto mb-20">
+          <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-gray-900">
+            {/* Video element - replace src with your video file */}
+            <video
+              className="w-full h-full object-cover"
+              controls
+              poster="/video-poster.jpg"
+              preload="metadata"
+            >
+              <source src="/how-it-works.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            
+            {/* Placeholder overlay - remove this once you have the video */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-santa-red/90 to-forest-green/90 text-white">
+              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center mb-4 backdrop-blur-sm">
+                <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+              <p className="text-xl font-semibold mb-2">Video Coming Soon</p>
+              <p className="text-white/70 text-sm">A personal message about how Letters to Santa works</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Steps Title */}
+        <div className="text-center mb-12">
+          <h3 className="font-display text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+            Three Simple Steps
+          </h3>
+          <p className="text-gray-600">
+            Here&apos;s the magic in a nutshell
           </p>
         </div>
 
@@ -452,7 +489,6 @@ function PricingSection() {
       extraChildPrice: 2.99,
       description: 'Watch the journey unfold',
       tier: 'TRACKER' as const,
-      popular: true,
       features: [
         'Everything in Letter to Santa',
         'Flight-style live tracker',
@@ -465,10 +501,11 @@ function PricingSection() {
     },
     {
       name: 'The Santa Experience',
-      price: 29.99,
+      price: 19.99,
       extraChildPrice: 2.99,
       description: 'The complete magical package',
       tier: 'EXPERIENCE' as const,
+      popular: true,
       features: [
         'Everything in Santa\'s Tracker',
         'Personalized Santa letter PDF',

@@ -28,7 +28,7 @@ export const PRICING = {
   EXPERIENCE: {
     tier: 'EXPERIENCE' as LetterTier,
     name: 'The Santa Experience',
-    price: 29.99,
+    price: 19.99,
     extraChildPrice: 2.99,
   },
 } as const

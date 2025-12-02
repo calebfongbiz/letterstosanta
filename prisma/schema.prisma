@@ -8,6 +8,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // Used for migrations (optional, for connection pooling setups)
 }
 
 // ===========================================
@@ -57,6 +58,10 @@ model Customer {
   // Subscription info
   tier               LetterTier @default(FREE)
   extraChildrenCount Int        @default(0)
+
+  // Stripe payment info
+  stripeCustomerId String?
+  stripePaymentId  String?
 
   // Relations
   children Child[]
