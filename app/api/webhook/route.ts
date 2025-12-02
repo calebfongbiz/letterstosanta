@@ -7,12 +7,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { db } from '@/lib/db'
-import { hashPasscode, generateTrackerId } from '@/lib/utils'
+import { generateTrackerId } from '@/lib/utils'
+import bcrypt from 'bcryptjs'
 import type { LetterTier } from '@/lib/types'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
-})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
@@ -38,7 +37,7 @@ export async function POST(request: NextRequest) {
       const tier = metadata.tier as LetterTier
 
       // Hash the passcode
-      const passcodeHash = await hashPasscode(orderData.passcode)
+      const passcodeHash = await bcrypt.hash(orderData.passcode, 10)
 
       // Check if customer already exists
       let customer = await db.customer.findUnique({
