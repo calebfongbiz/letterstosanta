@@ -2,7 +2,7 @@
  * Tracker Login API Route
  * 
  * POST /api/auth/tracker-login
- * Authenticates a customer by last name and passcode.
+ * Authenticates a customer by email and passcode.
  * Sets a session cookie on success.
  */
 
@@ -12,7 +12,7 @@ import { setSessionCookieInResponse } from '@/lib/session'
 import bcrypt from 'bcryptjs'
 
 interface LoginRequest {
-  lastName: string
+  email: string
   passcode: string
 }
 
@@ -21,9 +21,9 @@ export async function POST(request: NextRequest) {
     const body: LoginRequest = await request.json()
 
     // Validate input
-    if (!body.lastName?.trim()) {
+    if (!body.email?.trim()) {
       return NextResponse.json(
-        { error: 'Last name is required' },
+        { error: 'Email is required' },
         { status: 400 }
       )
     }
@@ -35,36 +35,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Find customer by last name (case insensitive)
-    // Note: In production with many users, you might want to add
-    // additional identifying info like email or a unique family code
-    const customers = await db.customer.findMany({
+    // Find customer by email (case insensitive)
+    const customer = await db.customer.findFirst({
       where: {
-        lastName: {
-          equals: body.lastName.trim(),
+        email: {
+          equals: body.email.trim().toLowerCase(),
           mode: 'insensitive',
         },
       },
     })
 
-    if (customers.length === 0) {
+    if (!customer) {
       return NextResponse.json(
-        { error: 'No account found with that last name' },
+        { error: 'No account found with that email' },
         { status: 401 }
       )
     }
 
-    // Try to match passcode against each customer with this last name
-    let matchedCustomer = null
-    for (const customer of customers) {
-      const isMatch = await bcrypt.compare(body.passcode, customer.passcodeHash)
-      if (isMatch) {
-        matchedCustomer = customer
-        break
-      }
-    }
-
-    if (!matchedCustomer) {
+    // Verify passcode
+    const isMatch = await bcrypt.compare(body.passcode, customer.passcodeHash)
+    
+    if (!isMatch) {
       return NextResponse.json(
         { error: 'Invalid passcode' },
         { status: 401 }
@@ -76,17 +67,17 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Login successful',
       customer: {
-        id: matchedCustomer.id,
-        firstName: matchedCustomer.firstName,
-        lastName: matchedCustomer.lastName,
+        id: customer.id,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
       },
     })
 
     // Set session cookie
     await setSessionCookieInResponse(response, {
-      customerId: matchedCustomer.id,
-      firstName: matchedCustomer.firstName,
-      lastName: matchedCustomer.lastName,
+      customerId: customer.id,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
     })
 
     return response

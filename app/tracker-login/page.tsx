@@ -13,7 +13,7 @@ import { Button, Card, Input, SectionContainer } from '@/components'
 
 export default function TrackerLoginPage() {
   const router = useRouter()
-  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
   const [passcode, setPasscode] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -22,8 +22,8 @@ export default function TrackerLoginPage() {
     e.preventDefault()
     setError('')
 
-    if (!lastName.trim() || !passcode.trim()) {
-      setError('Please enter both last name and passcode')
+    if (!email.trim() || !passcode.trim()) {
+      setError('Please enter both email and passcode')
       return
     }
 
@@ -33,7 +33,7 @@ export default function TrackerLoginPage() {
       const response = await fetch('/api/auth/tracker-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lastName, passcode }),
+        body: JSON.stringify({ email, passcode }),
       })
 
       const data = await response.json()
@@ -52,7 +52,6 @@ export default function TrackerLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#1a1a2e] pt-20">
     <SectionContainer size="md">
       <div className="max-w-md mx-auto">
         {/* Header */}
@@ -72,11 +71,12 @@ export default function TrackerLoginPage() {
         <Card variant="glass" className="p-6 md:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <Input
-              label="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Your family last name"
-              autoComplete="family-name"
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              autoComplete="email"
             />
 
             <Input
@@ -125,6 +125,5 @@ export default function TrackerLoginPage() {
         </div>
       </div>
     </SectionContainer>
-    </div>
   )
 }
