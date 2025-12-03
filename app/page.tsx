@@ -1,11 +1,10 @@
 /**
  * Landing Page
  * 
- * Redesigned with warm Santa hero image background.
+ * Main marketing page with hero, features, pricing, and more.
  */
 
 import Link from 'next/link'
-import Image from 'next/image'
 import {
   Button,
   SectionContainer,
@@ -52,102 +51,85 @@ export default function HomePage() {
 }
 
 // ============================================
-// HERO SECTION - Redesigned with background image
+// HERO SECTION
 // ============================================
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden -mt-16 md:-mt-20">
-      {/* Background Image */}
-      <div className="absolute inset-0">
-        <Image
-          src="/santa-hero.png"
-          alt="Santa reading a letter"
-          fill
-          className="object-cover object-center"
-          priority
-          quality={90}
-        />
-        {/* Overlay for better text readability on left side */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      {/* Background gradient and decorations */}
+      <div className="absolute inset-0 hero-gradient" />
+      
+      {/* Decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Large blurred shapes */}
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-gold/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-santa-red/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-forest-green/5 rounded-full blur-3xl" />
       </div>
 
-      {/* Snowfall effect */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(30)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-white animate-snowfall"
-            style={{
-              left: `${Math.random() * 100}%`,
-              width: `${4 + Math.random() * 6}px`,
-              height: `${4 + Math.random() * 6}px`,
-              opacity: 0.4 + Math.random() * 0.4,
-              animationDuration: `${10 + Math.random() * 10}s`,
-              animationDelay: `${Math.random() * 10}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-20">
-        <div className="max-w-2xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-4xl mx-auto text-center">
           {/* Trust line */}
-          <p className="text-white/80 text-sm mb-4 font-medium">
-            Trusted by parents. Loved by kids.
-          </p>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 animate-fade-in">
+            <span className="text-gold">⭐</span>
+            <span className="text-snow-cream/70 text-sm">Trusted by over 50,000 families worldwide</span>
+          </div>
 
           {/* Main headline */}
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            Create a Christmas{' '}
-            <span className="text-santa-red">Tradition</span> They&apos;ll Remember Forever
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-snow-cream mb-6 animate-slide-up">
+            Create a Christmas Tradition{' '}
+            <span className="gradient-text">They&apos;ll Remember Forever</span>
           </h1>
 
-          {/* Rhyming description in frosted glass box */}
-          <div className="inline-block bg-black/30 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/10">
-            <p className="text-white/90 text-lg leading-relaxed">
-              Your child writes a letter with wonder and cheer...
-              <br />
-              Then tracks where it travels as Christmas draws near...
-              <br />
-              And Santa&apos;s reply soon arrives with good cheer
-              <br />
-              <span className="font-semibold text-white">
-                A handwritten letter they&apos;ll treasure each year.
-              </span>
+          {/* Rhyming intro in blurred panel */}
+          <div className="glass-card p-6 md:p-8 mb-10 max-w-2xl mx-auto animate-slide-up animation-delay-200">
+            <p className="font-script text-xl md:text-2xl text-gold leading-relaxed">
+              &ldquo;A letter to Santa, sent with love and care,<br />
+              Tracked through magical lands, floating through air.<br />
+              Watch its journey from your home so bright,<br />
+              To the North Pole workshop, on Christmas night.&rdquo;
             </p>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up animation-delay-300">
             <Link href="/write-letter">
-              <Button variant="primary" size="lg" className="text-lg">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                Start Your Letter Free
+              <Button variant="gold" size="xl">
+                Write Your Letter to Santa ✨
               </Button>
             </Link>
             <Link href="#how-it-works">
-              <Button variant="outline" size="lg" className="text-lg">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                How It Works
+              <Button variant="outline" size="xl">
+                See How It Works
               </Button>
             </Link>
+          </div>
+
+          {/* Feature badges */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-12 animate-fade-in animation-delay-500">
+            <Badge icon="📧" text="Magical Email Updates" />
+            <Badge icon="✈️" text="Flight-Style Tracker" />
+            <Badge icon="🎅" text="Personalized Santa Reply" />
           </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <svg className="w-6 h-6 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-6 h-6 text-snow-cream/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
         </svg>
       </div>
     </section>
+  )
+}
+
+function Badge({ icon, text }: { icon: string; text: string }) {
+  return (
+    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
+      <span>{icon}</span>
+      <span className="text-snow-cream/70 text-sm">{text}</span>
+    </div>
   )
 }
 
@@ -156,24 +138,24 @@ function HeroSection() {
 // ============================================
 function TrustBar() {
   return (
-    <div className="py-8 border-b border-gray-100 bg-white">
+    <div className="py-8 border-y border-white/5 bg-white/[0.02]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 text-gray-400">
+        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 text-snow-cream/40">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🔒</span>
-            <span className="text-sm font-medium">100% Secure</span>
+            <span className="text-sm">100% Secure</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-2xl">⭐</span>
-            <span className="text-sm font-medium">4.9/5 Rating</span>
+            <span className="text-sm">4.9/5 Rating</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-2xl">👨‍👩‍👧‍👦</span>
-            <span className="text-sm font-medium">50,000+ Families</span>
+            <span className="text-sm">50,000+ Families</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-2xl">💝</span>
-            <span className="text-sm font-medium">Satisfaction Guaranteed</span>
+            <span className="text-sm">Satisfaction Guaranteed</span>
           </div>
         </div>
       </div>
@@ -182,107 +164,47 @@ function TrustBar() {
 }
 
 // ============================================
-// HOW IT WORKS (with video)
+// HOW IT WORKS
 // ============================================
 function HowItWorksSection() {
   const steps = [
     {
       step: 1,
-      title: 'Write Your Letter',
-      description: 'Fill out our magical form with your child\'s name, wishes, and a heartfelt letter to Santa. Add multiple children for just $2.99 each on paid plans.',
+      title: 'Your Child Writes a Letter',
+      description: 'Have your little one write or draw their letter to Santa the old-fashioned way. Then "mail" it together – put it in your mailbox, leave it by the fireplace, or create your own magical tradition!',
     },
     {
       step: 2,
-      title: 'Track the Journey',
-      description: 'Watch your letter travel through enchanted lands – from the Elf Sorting Station to Santa\'s Workshop at the North Pole.',
+      title: 'Parents Log the Details',
+      description: 'Once the letter is "sent," secretly fill out our form with your child\'s wishes, good deeds, and any special details you want Santa to know. This powers the magic behind the scenes!',
     },
     {
       step: 3,
-      title: 'Receive Santa\'s Reply',
-      description: 'Get a personalized letter back from Santa himself, along with a beautiful Nice List Certificate.',
+      title: 'Track & Experience the Magic',
+      description: 'Watch the letter travel through enchanted lands together! With paid tiers, receive a personalized reply from Santa and a Nice List Certificate.',
     },
   ]
 
   return (
-    <section id="how-it-works" className="py-20 md:py-32 bg-gradient-to-b from-white to-red-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            How the Magic Works
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Watch our quick video to see how Letters to Santa creates unforgettable Christmas memories
-          </p>
-        </div>
+    <SectionContainer id="how-it-works" variant="gradient" withPattern>
+      <SectionTitle
+        title="How the Magic Works"
+        subtitle="A magical experience that combines real traditions with digital wonder"
+      />
 
-        {/* Video Section */}
-        <div className="max-w-4xl mx-auto mb-20">
-          <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-gray-900">
-            {/* Video element - replace src with your video file */}
-            <video
-              className="w-full h-full object-cover"
-              controls
-              poster="/video-poster.jpg"
-              preload="metadata"
-            >
-              <source src="/how-it-works.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        {steps.map((step, index) => (
+          <div key={step.step} className="relative">
+            <StepCard {...step} />
             
-            {/* Placeholder overlay - remove this once you have the video */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-santa-red/90 to-forest-green/90 text-white">
-              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center mb-4 backdrop-blur-sm">
-                <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-              <p className="text-xl font-semibold mb-2">Video Coming Soon</p>
-              <p className="text-white/70 text-sm">A personal message about how Letters to Santa works</p>
-            </div>
+            {/* Connection line (desktop only) */}
+            {index < steps.length - 1 && (
+              <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-gold/50 to-transparent" />
+            )}
           </div>
-        </div>
-
-        {/* Steps Title */}
-        <div className="text-center mb-12">
-          <h3 className="font-display text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            Three Simple Steps
-          </h3>
-          <p className="text-gray-600">
-            Here&apos;s the magic in a nutshell
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {steps.map((step, index) => (
-            <div key={step.step} className="relative">
-              <div className="flex flex-col items-center text-center p-8">
-                {/* Step number */}
-                <div className="relative mb-6">
-                  <div className="w-16 h-16 rounded-full bg-santa-red flex items-center justify-center shadow-lg shadow-santa-red/30">
-                    <span className="font-display text-2xl font-bold text-white">
-                      {step.step}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <h3 className="font-display text-xl font-bold text-gray-900 mb-3">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed max-w-xs">
-                  {step.description}
-                </p>
-              </div>
-              
-              {/* Connection line (desktop only) */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-santa-red/50 to-transparent" />
-              )}
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
-    </section>
+    </SectionContainer>
   )
 }
 
@@ -324,37 +246,18 @@ function FeaturesSection() {
   ]
 
   return (
-    <section id="features" className="py-20 md:py-32 bg-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Magical Features
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Everything you need to create the perfect Christmas experience
-          </p>
-        </div>
+    <SectionContainer id="features" size="lg">
+      <SectionTitle
+        title="Magical Features"
+        subtitle="Everything you need to create the perfect Christmas experience"
+      />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature) => (
-            <div
-              key={feature.title}
-              className="group p-8 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gray-100"
-            >
-              <span className="text-5xl mb-4 block group-hover:scale-110 transition-transform">
-                {feature.icon}
-              </span>
-              <h3 className="font-display text-xl font-bold text-gray-900 mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {features.map((feature) => (
+          <FeatureCard key={feature.title} {...feature} />
+        ))}
       </div>
-    </section>
+    </SectionContainer>
   )
 }
 
@@ -363,104 +266,102 @@ function FeaturesSection() {
 // ============================================
 function TrackerPreviewSection() {
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-b from-midnight to-midnight-light text-white overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <div>
-            <span className="inline-block px-4 py-1 rounded-full bg-gold/20 text-gold text-sm font-semibold mb-4">
-              Flight-Style Tracker
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-6">
-              Watch Your Letter&apos;s Magical Journey
-            </h2>
-            <p className="text-white/70 text-lg mb-8 leading-relaxed">
-              Our beautiful tracker shows your letter traveling through enchanted locations on its way to Santa. 
-              Each stop comes alive with animations and story updates that bring the magic of Christmas to life.
-            </p>
+    <SectionContainer variant="dark" size="lg">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        {/* Content */}
+        <div>
+          <span className="inline-block px-4 py-1 rounded-full bg-gold/20 text-gold text-sm font-semibold mb-4">
+            Flight-Style Tracker
+          </span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-snow-cream mb-6">
+            Watch Your Letter&apos;s Magical Journey
+          </h2>
+          <p className="text-snow-cream/70 text-lg mb-8 leading-relaxed">
+            Our beautiful tracker shows your letter traveling through enchanted locations on its way to Santa. 
+            Each stop comes alive with animations and story updates that bring the magic of Christmas to life.
+          </p>
 
-            <ul className="space-y-4 mb-8">
+          <ul className="space-y-4 mb-8">
+            {[
+              'Elf Sorting Station – Where magic begins',
+              'Candy Cane Forest – Through peppermint trees',
+              'Reindeer Runway – Where Dasher approves',
+              'Aurora Gate – Under northern lights',
+              'Santa\'s Desk – Personal reading time',
+              'North Pole Workshop – Journey complete!',
+            ].map((item) => (
+              <li key={item} className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-forest-green/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-forest-green-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+                <span className="text-snow-cream/80">{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="text-snow-cream/50 text-sm italic mb-6">
+            * Tracker access included with Santa&apos;s Tracker and The Santa Experience plans
+          </p>
+
+          <Link href="/write-letter?tier=TRACKER">
+            <Button variant="gold" size="lg">
+              Get Tracker Access
+            </Button>
+          </Link>
+        </div>
+
+        {/* Preview mockup */}
+        <div className="relative">
+          <Card variant="glass" className="p-6 md:p-8">
+            {/* Mock progress bar */}
+            <div className="mb-6">
+              <div className="flex justify-between text-sm text-snow-cream/60 mb-2">
+                <span>Emma&apos;s Letter Journey</span>
+                <span className="text-gold">67% Complete</span>
+              </div>
+              <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-full w-2/3 bg-gradient-to-r from-forest-green via-gold to-santa-red rounded-full" />
+              </div>
+            </div>
+
+            {/* Mock timeline */}
+            <div className="space-y-4">
               {[
-                'Elf Sorting Station – Where magic begins',
-                'Candy Cane Forest – Through peppermint trees',
-                'Reindeer Runway – Where Dasher approves',
-                'Aurora Gate – Under northern lights',
-                'Santa\'s Desk – Personal reading time',
-                'North Pole Workshop – Journey complete!',
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-forest-green/30 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-forest-green-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                { icon: '📬', name: 'Elf Sorting Station', done: true },
+                { icon: '🍬', name: 'Candy Cane Forest', done: true },
+                { icon: '🦌', name: 'Reindeer Runway', done: true },
+                { icon: '✨', name: 'Aurora Gate', done: true, current: true },
+                { icon: '🎅', name: "Santa's Desk", done: false },
+                { icon: '🎁', name: 'North Pole Workshop', done: false },
+              ].map((stop, i) => (
+                <div
+                  key={stop.name}
+                  className={`flex items-center gap-4 p-3 rounded-xl transition-all ${
+                    stop.current ? 'bg-gold/20 border border-gold/30' : stop.done ? 'bg-white/5' : 'opacity-40'
+                  }`}
+                >
+                  <span className={`text-2xl ${stop.current ? 'animate-bounce-soft' : ''}`}>{stop.icon}</span>
+                  <span className={stop.done ? 'text-snow-cream' : 'text-snow-cream/50'}>{stop.name}</span>
+                  {stop.done && !stop.current && (
+                    <svg className="w-5 h-5 text-forest-green-light ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                  </span>
-                  <span className="text-white/80">{item}</span>
-                </li>
+                  )}
+                  {stop.current && (
+                    <span className="ml-auto text-xs text-gold font-semibold">NOW</span>
+                  )}
+                </div>
               ))}
-            </ul>
+            </div>
+          </Card>
 
-            <p className="text-white/50 text-sm italic mb-6">
-              * Tracker access included with Santa&apos;s Tracker and The Santa Experience plans
-            </p>
-
-            <Link href="/write-letter?tier=TRACKER">
-              <Button variant="gold" size="lg">
-                Get Tracker Access
-              </Button>
-            </Link>
-          </div>
-
-          {/* Preview mockup */}
-          <div className="relative">
-            <Card variant="glass" className="p-6 md:p-8">
-              {/* Mock progress bar */}
-              <div className="mb-6">
-                <div className="flex justify-between text-sm text-white/60 mb-2">
-                  <span>Emma&apos;s Letter Journey</span>
-                  <span className="text-gold">67% Complete</span>
-                </div>
-                <div className="h-3 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full w-2/3 bg-gradient-to-r from-forest-green via-gold to-santa-red rounded-full" />
-                </div>
-              </div>
-
-              {/* Mock timeline */}
-              <div className="space-y-4">
-                {[
-                  { icon: '📬', name: 'Elf Sorting Station', done: true },
-                  { icon: '🍬', name: 'Candy Cane Forest', done: true },
-                  { icon: '🦌', name: 'Reindeer Runway', done: true },
-                  { icon: '✨', name: 'Aurora Gate', done: true, current: true },
-                  { icon: '🎅', name: "Santa's Desk", done: false },
-                  { icon: '🎁', name: 'North Pole Workshop', done: false },
-                ].map((stop) => (
-                  <div
-                    key={stop.name}
-                    className={`flex items-center gap-4 p-3 rounded-xl transition-all ${
-                      stop.current ? 'bg-gold/20 border border-gold/30' : stop.done ? 'bg-white/5' : 'opacity-40'
-                    }`}
-                  >
-                    <span className={`text-2xl ${stop.current ? 'animate-bounce-soft' : ''}`}>{stop.icon}</span>
-                    <span className={stop.done ? 'text-white' : 'text-white/50'}>{stop.name}</span>
-                    {stop.done && !stop.current && (
-                      <svg className="w-5 h-5 text-forest-green-light ml-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                    {stop.current && (
-                      <span className="ml-auto text-xs text-gold font-semibold">NOW</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Decorative glow */}
-            <div className="absolute -inset-4 bg-gold/10 blur-3xl rounded-full -z-10" />
-          </div>
+          {/* Decorative glow */}
+          <div className="absolute -inset-4 bg-gold/10 blur-3xl rounded-full -z-10" />
         </div>
       </div>
-    </section>
+    </SectionContainer>
   )
 }
 
@@ -489,6 +390,7 @@ function PricingSection() {
       extraChildPrice: 2.99,
       description: 'Watch the journey unfold',
       tier: 'TRACKER' as const,
+      popular: true,
       features: [
         'Everything in Letter to Santa',
         'Flight-style live tracker',
@@ -501,11 +403,10 @@ function PricingSection() {
     },
     {
       name: 'The Santa Experience',
-      price: 19.99,
+      price: 29.99,
       extraChildPrice: 2.99,
       description: 'The complete magical package',
       tier: 'EXPERIENCE' as const,
-      popular: true,
       features: [
         'Everything in Santa\'s Tracker',
         'Personalized Santa letter PDF',
@@ -519,133 +420,22 @@ function PricingSection() {
   ]
 
   return (
-    <section id="pricing" className="py-20 md:py-32 bg-gradient-to-b from-red-50 to-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Choose Your Christmas Magic
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Select the perfect experience for your family
-          </p>
-        </div>
+    <SectionContainer id="pricing" variant="gradient" size="lg">
+      <SectionTitle
+        title="Choose Your Christmas Magic"
+        subtitle="Select the perfect experience for your family"
+      />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan) => (
-            <PricingCardLight key={plan.tier} {...plan} />
-          ))}
-        </div>
-
-        <p className="text-center text-gray-500 text-sm mt-8">
-          All plans include a 100% satisfaction guarantee.
-        </p>
-      </div>
-    </section>
-  )
-}
-
-// Light theme pricing card
-function PricingCardLight({
-  name,
-  price,
-  extraChildPrice,
-  description,
-  features,
-  popular = false,
-  ctaText = 'Get Started',
-  tier,
-}: {
-  name: string
-  price: number
-  extraChildPrice?: number
-  description: string
-  features: string[]
-  popular?: boolean
-  ctaText?: string
-  tier: 'FREE' | 'TRACKER' | 'EXPERIENCE'
-}) {
-  const href = `/write-letter?tier=${tier}`
-
-  return (
-    <div
-      className={`relative flex flex-col rounded-3xl p-8 transition-all duration-300 ${
-        popular 
-          ? 'bg-white scale-105 shadow-2xl border-2 border-santa-red' 
-          : 'bg-white shadow-lg border border-gray-100 hover:shadow-xl'
-      }`}
-    >
-      {/* Popular badge */}
-      {popular && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-          <span className="inline-flex items-center px-4 py-1 rounded-full text-sm font-semibold bg-santa-red text-white">
-            ✨ Most Popular
-          </span>
-        </div>
-      )}
-
-      {/* Header */}
-      <div className="mb-6">
-        <h3 className="font-display text-2xl font-bold text-gray-900 mb-2">
-          {name}
-        </h3>
-        <p className="text-gray-500 text-sm">
-          {description}
-        </p>
-      </div>
-
-      {/* Price */}
-      <div className="mb-6">
-        <div className="flex items-baseline gap-1">
-          {price === 0 ? (
-            <span className="font-display text-5xl font-bold text-santa-red">FREE</span>
-          ) : (
-            <>
-              <span className="font-display text-5xl font-bold text-gray-900">
-                ${price.toFixed(2)}
-              </span>
-            </>
-          )}
-        </div>
-        {extraChildPrice && extraChildPrice > 0 && (
-          <p className="text-gray-400 text-sm mt-1">
-            + ${extraChildPrice.toFixed(2)} per extra child
-          </p>
-        )}
-      </div>
-
-      {/* Features */}
-      <ul className="space-y-3 mb-8 flex-grow">
-        {features.map((feature, index) => (
-          <li key={index} className="flex items-start gap-3">
-            <svg
-              className="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            <span className="text-gray-600 text-sm">{feature}</span>
-          </li>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+        {plans.map((plan) => (
+          <PricingCard key={plan.tier} {...plan} />
         ))}
-      </ul>
+      </div>
 
-      {/* CTA */}
-      <Link href={href} className="block">
-        <Button
-          variant={popular ? 'primary' : 'secondary'}
-          size="lg"
-          className="w-full"
-        >
-          {ctaText}
-        </Button>
-      </Link>
-    </div>
+      <p className="text-center text-snow-cream/50 text-sm mt-8">
+        All plans include a 100% satisfaction guarantee. Payment integration coming soon.
+      </p>
+    </SectionContainer>
   )
 }
 
@@ -675,59 +465,18 @@ function TestimonialsSection() {
   ]
 
   return (
-    <section className="py-20 md:py-32 bg-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            What Families Are Saying
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Join thousands of families creating magical Christmas memories
-          </p>
-        </div>
+    <SectionContainer size="lg">
+      <SectionTitle
+        title="What Families Are Saying"
+        subtitle="Join thousands of families creating magical Christmas memories"
+      />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, i) => (
-            <div
-              key={i}
-              className="p-8 rounded-2xl bg-gray-50 border border-gray-100"
-            >
-              {/* Rating stars */}
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <svg
-                    key={i}
-                    className="w-5 h-5 text-gold"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-
-              {/* Quote */}
-              <blockquote className="text-gray-700 text-lg leading-relaxed mb-6">
-                &ldquo;{testimonial.quote}&rdquo;
-              </blockquote>
-
-              {/* Author */}
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-santa-red to-forest-green flex items-center justify-center">
-                  <span className="font-display font-bold text-white text-sm">
-                    {testimonial.author.split(' ').map(n => n[0]).join('')}
-                  </span>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900">{testimonial.author}</p>
-                  <p className="text-gray-500 text-sm">{testimonial.location}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        {testimonials.map((testimonial, i) => (
+          <TestimonialCard key={i} {...testimonial} />
+        ))}
       </div>
-    </section>
+    </SectionContainer>
   )
 }
 
@@ -763,51 +512,14 @@ function FaqSectionWrapper() {
   ]
 
   return (
-    <section id="faq" className="py-20 md:py-32 bg-gray-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Everything you need to know about Letters to Santa
-          </p>
-        </div>
+    <SectionContainer id="faq" variant="dark" size="lg">
+      <SectionTitle
+        title="Frequently Asked Questions"
+        subtitle="Everything you need to know about Letters to Santa"
+      />
 
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-          {faqs.map((faq, index) => (
-            <FaqItemLight
-              key={index}
-              question={faq.question}
-              answer={faq.answer}
-              isLast={index === faqs.length - 1}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function FaqItemLight({ question, answer, isLast }: { question: string; answer: string; isLast: boolean }) {
-  return (
-    <details className={`group ${!isLast ? 'border-b border-gray-100' : ''}`}>
-      <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-        <h3 className="font-display font-semibold text-lg text-gray-900 pr-4 group-hover:text-santa-red transition-colors">
-          {question}
-        </h3>
-        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-open:rotate-180 transition-transform">
-          <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </span>
-      </summary>
-      <div className="px-6 pb-6">
-        <p className="text-gray-600 leading-relaxed">
-          {answer}
-        </p>
-      </div>
-    </details>
+      <FaqSection faqs={faqs} />
+    </SectionContainer>
   )
 }
 
@@ -816,32 +528,30 @@ function FaqItemLight({ question, answer, isLast }: { question: string; answer: 
 // ============================================
 function FinalCtaSection() {
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-b from-white to-red-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center">
-          <span className="text-6xl mb-6 block">🎄</span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            Ready to Create Some Christmas Magic?
-          </h2>
-          <p className="text-gray-600 text-lg mb-10">
-            Join thousands of families who have made Letters to Santa part of their holiday tradition. 
-            Start your child&apos;s magical journey today.
-          </p>
+    <SectionContainer size="lg">
+      <div className="max-w-3xl mx-auto text-center">
+        <span className="text-6xl mb-6 block">🎄</span>
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-snow-cream mb-6">
+          Ready to Create Some Christmas Magic?
+        </h2>
+        <p className="text-snow-cream/70 text-lg mb-10">
+          Join thousands of families who have made Letters to Santa part of their holiday tradition. 
+          Start your child&apos;s magical journey today.
+        </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/write-letter">
-              <Button variant="primary" size="xl">
-                Start Your Letter Free ✨
-              </Button>
-            </Link>
-            <Link href="/tracker-login">
-              <Button variant="ghost" size="xl" className="text-gray-600 hover:text-santa-red">
-                Already Have a Letter? Track It →
-              </Button>
-            </Link>
-          </div>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link href="/write-letter">
+            <Button variant="gold" size="xl">
+              Write to Santa Now ✨
+            </Button>
+          </Link>
+          <Link href="/tracker-login">
+            <Button variant="outline" size="xl">
+              Already Have a Letter? Track It
+            </Button>
+          </Link>
         </div>
       </div>
-    </section>
+    </SectionContainer>
   )
 }
