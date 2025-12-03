@@ -97,7 +97,7 @@ function HeroSection() {
           </h1>
 
           {/* Rhyming description in frosted glass box */}
-          <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/10">
+          <div className="bg-black/60 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20 w-fit">
             <p className="text-white/90 text-lg leading-relaxed">
               Your child writes a letter with wonder and cheer...
               <br />
