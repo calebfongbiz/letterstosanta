@@ -302,10 +302,10 @@ function TrackerPreviewSection() {
           </ul>
 
           <p className="text-snow-cream/50 text-sm italic mb-6">
-            * Tracker access included with Santa&apos;s Tracker and The Santa Experience plans
+            * Visual Flight Tracker included with Santa&apos;s Magic plan
           </p>
 
-          <Link href="/write-letter?tier=TRACKER">
+          <Link href="/write-letter?tier=MAGIC">
             <Button variant="gold" size="lg">
               Get Tracker Access
             </Button>
@@ -373,49 +373,33 @@ function PricingSection() {
     {
       name: 'Letter to Santa',
       price: 0,
-      extraChildPrice: 0,
-      description: 'Perfect for trying the magic',
+      extraChildPrice: 0.99,
+      description: 'The magical journey begins',
       tier: 'FREE' as const,
       features: [
-        'Submit one letter to Santa',
-        'Daily elf story email updates',
-        'Magical confirmation email',
-        'No tracker access',
+        'Printable letter template with North Pole GPS seal',
+        '5 daily magical story emails from Jingles the Elf',
+        '"Delivered to Santa!" confirmation email',
+        'Account status updates',
+        'Add extra children (+$0.99 each)',
       ],
       ctaText: 'Start Free',
     },
     {
-      name: "Santa's Tracker",
-      price: 14.99,
-      extraChildPrice: 2.99,
-      description: 'Watch the journey unfold',
-      tier: 'TRACKER' as const,
+      name: "Santa's Magic",
+      price: 7.99,
+      extraChildPrice: 0.99,
+      description: 'The complete magical experience',
+      tier: 'MAGIC' as const,
       popular: true,
       features: [
         'Everything in Letter to Santa',
-        'Flight-style live tracker',
-        'Watch letter travel 6 locations',
-        'Animated milestone updates',
-        'Passcode-protected dashboard',
-        'Add extra children (+$2.99 each)',
-      ],
-      ctaText: 'Get Tracker Access',
-    },
-    {
-      name: 'The Santa Experience',
-      price: 29.99,
-      extraChildPrice: 2.99,
-      description: 'The complete magical package',
-      tier: 'EXPERIENCE' as const,
-      features: [
-        'Everything in Santa\'s Tracker',
-        'Personalized Santa letter PDF',
+        'Visual Flight Tracker - watch the journey!',
+        'Personalized Santa Reply PDF',
         'Nice List Certificate PDF',
-        'Option for physical letter',
-        'Priority Santa response',
-        'Add extra children (+$2.99 each)',
+        'Add extra children (+$0.99 each)',
       ],
-      ctaText: 'Get Full Experience',
+      ctaText: 'Get the Magic ✨',
     },
   ]
 
@@ -423,18 +407,23 @@ function PricingSection() {
     <SectionContainer id="pricing" variant="gradient" size="lg">
       <SectionTitle
         title="Choose Your Christmas Magic"
-        subtitle="Select the perfect experience for your family"
+        subtitle="Both plans include the printable letter template and daily story updates!"
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
         {plans.map((plan) => (
           <PricingCard key={plan.tier} {...plan} />
         ))}
       </div>
 
-      <p className="text-center text-snow-cream/50 text-sm mt-8">
-        All plans include a 100% satisfaction guarantee. Payment integration coming soon.
-      </p>
+      <div className="text-center mt-8">
+        <p className="text-snow-cream/70 text-sm mb-2">
+          🎁 <strong>Coming Soon:</strong> Physical letter from Santa mailed to your home!
+        </p>
+        <p className="text-snow-cream/50 text-xs">
+          (Pay only shipping + printing costs)
+        </p>
+      </div>
     </SectionContainer>
   )
 }

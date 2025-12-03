@@ -16,13 +16,11 @@ datasource db {
 // ===========================================
 
 // Subscription tiers for the Letters to Santa service
-// FREE: Basic letter submission with email updates only
-// TRACKER: Includes visual flight-style tracker
-// EXPERIENCE: Full package with Santa letter and certificate
+// FREE: Printable template + 5 daily story emails + delivery confirmation
+// MAGIC: Everything in FREE + Visual tracker + Santa Reply PDF + Nice List Certificate
 enum LetterTier {
   FREE
-  TRACKER
-  EXPERIENCE
+  MAGIC
 }
 
 // Milestone locations for the letter's journey to Santa
@@ -59,7 +57,7 @@ model Customer {
   tier               LetterTier @default(FREE)
   extraChildrenCount Int        @default(0)
 
-  // Stripe payment info
+  // Stripe fields
   stripeCustomerId String?
   stripePaymentId  String?
 
@@ -121,7 +119,7 @@ model Letter {
   // Optional uploaded photo of handwritten letter
   photoUrl String?
 
-  // Response materials (populated by Make.com for EXPERIENCE tier)
+  // Response materials (populated for MAGIC tier)
   santaLetterPdfUrl      String? // URL to personalized Santa reply PDF
   niceListCertificateUrl String? // URL to Nice List certificate PDF
 

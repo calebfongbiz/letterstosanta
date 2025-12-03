@@ -5,7 +5,7 @@
  */
 
 // Type definitions (matches Prisma schema enums)
-export type LetterTier = 'FREE' | 'TRACKER' | 'EXPERIENCE'
+export type LetterTier = 'FREE' | 'MAGIC'
 export type Milestone = 'ELF_SORTING_STATION' | 'CANDY_CANE_FOREST' | 'REINDEER_RUNWAY' | 'AURORA_GATE' | 'SANTAS_DESK' | 'NORTH_POLE_WORKSHOP'
 
 // ===========================================
@@ -16,28 +16,50 @@ export const PRICING = {
   FREE: {
     tier: 'FREE' as LetterTier,
     name: 'Letter to Santa',
+    tagline: 'The magical journey begins',
     price: 0,
-    extraChildPrice: 0, // Free tier doesn't support extra children
+    extraChildPrice: 0.99,
+    features: [
+      'Printable letter template with North Pole GPS seal',
+      '5 daily magical story emails from Jingles the Elf',
+      '"Delivered to Santa!" confirmation email',
+      'Account status updates',
+    ],
+    notIncluded: [
+      'Visual Flight Tracker',
+      'Personalized Santa Reply PDF',
+      'Nice List Certificate',
+    ],
   },
-  TRACKER: {
-    tier: 'TRACKER' as LetterTier,
-    name: "Santa's Tracker",
-    price: 14.99,
-    extraChildPrice: 2.99,
-  },
-  EXPERIENCE: {
-    tier: 'EXPERIENCE' as LetterTier,
-    name: 'The Santa Experience',
-    price: 19.99,
-    extraChildPrice: 2.99,
+  MAGIC: {
+    tier: 'MAGIC' as LetterTier,
+    name: "Santa's Magic",
+    tagline: 'The complete magical experience',
+    price: 7.99,
+    extraChildPrice: 0.99,
+    features: [
+      'Everything in FREE tier',
+      'Visual Flight Tracker - watch the journey unfold!',
+      'Personalized Santa Reply PDF',
+      'Nice List Certificate PDF',
+    ],
+    popular: true,
   },
 } as const
+
+// Physical letter add-on (priced separately based on shipping + Thankster cost)
+export const PHYSICAL_LETTER_ADDON = {
+  name: 'Physical Letter from Santa',
+  description: 'Handwritten-style letter mailed to your home',
+  basePrice: 0, // Will be calculated based on Thankster + shipping
+  enabled: false, // Enable once pricing is determined
+}
 
 // ===========================================
 // MILESTONE DATA
 // ===========================================
 
-// Order of milestones for the tracker
+// Order of milestones for the tracker (5 days + final delivery)
 export const MILESTONE_ORDER: Milestone[] = [
   'ELF_SORTING_STATION',
   'CANDY_CANE_FOREST',
@@ -53,8 +75,9 @@ export interface MilestoneInfo {
   name: string
   shortName: string
   description: string
-  icon: string // Emoji for now, could be replaced with actual icons
+  icon: string
   defaultStory: string
+  emailDay: number // Which day this email goes out (1-5, 0 for final)
 }
 
 export const MILESTONE_DATA: Record<Milestone, MilestoneInfo> = {
@@ -64,7 +87,8 @@ export const MILESTONE_DATA: Record<Milestone, MilestoneInfo> = {
     shortName: 'Sorting',
     description: 'Where magical elves receive and sort all incoming letters',
     icon: '📬',
-    defaultStory: 'Your letter has arrived at the Elf Sorting Station! Jingle and Twinkle are carefully reviewing your wishes and adding special sparkle dust for the journey ahead.',
+    defaultStory: 'Your letter has arrived at the Elf Sorting Station! Jingles the Delivery Elf has been assigned as your letter\'s personal guide for this magical journey.',
+    emailDay: 1,
   },
   CANDY_CANE_FOREST: {
     id: 'CANDY_CANE_FOREST',
@@ -72,7 +96,8 @@ export const MILESTONE_DATA: Record<Milestone, MilestoneInfo> = {
     shortName: 'Forest',
     description: 'A magical forest of peppermint trees and candy cane paths',
     icon: '🍬',
-    defaultStory: 'Your letter is traveling through the enchanted Candy Cane Forest! The sweet scent of peppermint guides the way as snow fairies light the path with their glowing wands.',
+    defaultStory: 'Your letter is traveling through the enchanted Candy Cane Forest! The Sugar Sprites are cheering it on as Jingles guides it through the peppermint paths.',
+    emailDay: 2,
   },
   REINDEER_RUNWAY: {
     id: 'REINDEER_RUNWAY',
@@ -80,7 +105,8 @@ export const MILESTONE_DATA: Record<Milestone, MilestoneInfo> = {
     shortName: 'Runway',
     description: 'Where Santa\'s reindeer prepare for their magical flights',
     icon: '🦌',
-    defaultStory: 'Arriving at Reindeer Runway! Dasher and Dancer have given your letter their stamp of approval, and it\'s now being loaded onto the express sleigh to the North Pole.',
+    defaultStory: 'Your letter has reached Reindeer Runway! Dasher gave it an approving sniff, and Rudolph\'s nose glowed extra bright when he saw it.',
+    emailDay: 3,
   },
   AURORA_GATE: {
     id: 'AURORA_GATE',
@@ -88,23 +114,26 @@ export const MILESTONE_DATA: Record<Milestone, MilestoneInfo> = {
     shortName: 'Aurora',
     description: 'The shimmering northern lights gateway to Santa\'s realm',
     icon: '✨',
-    defaultStory: 'Your letter is passing through the magnificent Aurora Gate! The dancing northern lights are guiding it safely into the heart of the North Pole.',
+    defaultStory: 'Your letter is passing through the magnificent Aurora Gate! The northern lights wrapped around it, infusing it with extra North Pole magic.',
+    emailDay: 4,
   },
   SANTAS_DESK: {
     id: 'SANTAS_DESK',
-    name: "Santa's Desk",
-    shortName: 'Santa',
-    description: 'Where Santa personally reads each and every letter',
+    name: "Santa's Workshop",
+    shortName: 'Workshop',
+    description: 'The final destination - Santa\'s Workshop at the North Pole',
     icon: '🎅',
-    defaultStory: 'Amazing news! Your letter has reached Santa\'s Desk! Santa himself is reading your letter with his reading glasses and a warm cup of cocoa.',
+    defaultStory: 'YOUR LETTER HAS BEEN DELIVERED! Santa himself read your letter with a warm smile and twinkling eyes. The magic of Christmas is now in full swing!',
+    emailDay: 5,
   },
   NORTH_POLE_WORKSHOP: {
     id: 'NORTH_POLE_WORKSHOP',
-    name: 'North Pole Workshop',
-    shortName: 'Workshop',
-    description: 'The final destination where holiday magic happens',
+    name: 'Delivered!',
+    shortName: 'Delivered',
+    description: 'Your letter has been delivered to Santa!',
     icon: '🎁',
-    defaultStory: 'Your letter has completed its journey to the North Pole Workshop! Santa has shared your wishes with his team of master toymakers. The magic of Christmas is now in full swing!',
+    defaultStory: 'Your letter\'s journey is complete! It\'s now safely with Santa, who has shared your wishes with his team of master toymakers.',
+    emailDay: 0, // Final confirmation, not a daily email
   },
 }
 
@@ -206,17 +235,17 @@ export function getMilestoneFromIndex(index: number): Milestone {
 }
 
 /**
- * Check if a tier includes tracker access
+ * Check if a tier includes visual tracker access
  */
 export function hasTrackerAccess(tier: LetterTier): boolean {
-  return tier === 'TRACKER' || tier === 'EXPERIENCE'
+  return tier === 'MAGIC'
 }
 
 /**
- * Check if a tier includes Santa letter
+ * Check if a tier includes Santa letter PDF
  */
 export function hasSantaLetterAccess(tier: LetterTier): boolean {
-  return tier === 'EXPERIENCE'
+  return tier === 'MAGIC'
 }
 
 /**
@@ -225,4 +254,11 @@ export function hasSantaLetterAccess(tier: LetterTier): boolean {
 export function getTrackerUrl(trackerId: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
   return `${baseUrl}/track/${trackerId}`
+}
+
+/**
+ * Format price for display
+ */
+export function formatPrice(price: number): string {
+  return price === 0 ? 'FREE' : `$${price.toFixed(2)}`
 }
