@@ -1,7 +1,7 @@
 /**
  * Stripe Checkout API Route
  * 
- * Creates a Stripe Checkout session for paid tiers.
+ * Creates a Stripe Checkout session for paid tier (MAGIC).
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -14,8 +14,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { tier, childrenCount, orderData } = body
 
-    // Validate tier
-    if (!['TRACKER', 'EXPERIENCE'].includes(tier)) {
+    // Validate tier - only MAGIC tier goes through checkout
+    if (tier !== 'MAGIC') {
       return NextResponse.json(
         { error: 'Invalid tier for checkout' },
         { status: 400 }
@@ -23,8 +23,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate price
-    const basePrice = tier === 'TRACKER' ? 1499 : 1999 // in cents
-    const extraChildPrice = 299 // in cents
+    const basePrice = 799 // $7.99 in cents
+    const extraChildPrice = 99 // $0.99 in cents
     const extraChildren = Math.max(0, childrenCount - 1)
     const totalPrice = basePrice + (extraChildren * extraChildPrice)
 
@@ -34,10 +34,8 @@ export async function POST(request: NextRequest) {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: tier === 'TRACKER' ? "Santa's Tracker" : 'The Santa Experience',
-            description: tier === 'TRACKER' 
-              ? 'Flight-style tracker for your letter to Santa'
-              : 'Complete magical experience with personalized Santa letter',
+            name: "Santa's Magic",
+            description: 'Visual Flight Tracker + Personalized Santa Reply + Nice List Certificate',
           },
           unit_amount: basePrice,
         },

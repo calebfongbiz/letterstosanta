@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const updatedCustomer = await db.customer.update({
       where: { id: customerId },
       data: {
-        tier: targetTier as 'TRACKER' | 'EXPERIENCE',
+        tier: targetTier as 'MAGIC',
         stripePaymentId: session.payment_intent as string,
       },
     })

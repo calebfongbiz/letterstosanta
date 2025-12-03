@@ -1,7 +1,8 @@
 /**
- * Stripe Webhook Handler
+ * Stripe Webhook API Route
  * 
- * Processes successful payments and creates orders.
+ * Handles Stripe webhook events, particularly checkout.session.completed.
+ * Creates customer and children records after successful payment.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -9,20 +10,21 @@ import Stripe from 'stripe'
 import { db } from '@/lib/db'
 import { generateTrackerId } from '@/lib/utils'
 import bcrypt from 'bcryptjs'
-import type { LetterTier } from '@/lib/types'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
-
 export async function POST(request: NextRequest) {
   const body = await request.text()
-  const signature = request.headers.get('stripe-signature')!
+  const sig = request.headers.get('stripe-signature')!
 
   let event: Stripe.Event
 
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
+    event = stripe.webhooks.constructEvent(
+      body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    )
   } catch (err) {
     console.error('Webhook signature verification failed:', err)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
@@ -30,104 +32,96 @@ export async function POST(request: NextRequest) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
-
+    
     try {
-      const metadata = session.metadata!
-      const orderData = JSON.parse(metadata.orderData)
-      const tier = metadata.tier as LetterTier
+      // Extract metadata
+      const { tier, childrenCount, orderData: orderDataStr } = session.metadata || {}
+      const orderData = JSON.parse(orderDataStr || '{}')
 
-      // Hash the passcode
+      // Hash passcode
       const passcodeHash = await bcrypt.hash(orderData.passcode, 10)
 
-      // Check if customer already exists
-      let customer = await db.customer.findUnique({
-        where: { email: orderData.parentEmail },
+      // Calculate extra children
+      const extraChildrenCount = Math.max(0, parseInt(childrenCount || '1') - 1)
+
+      // Create customer with children
+      const customer = await db.customer.create({
+        data: {
+          firstName: orderData.parentFirstName,
+          lastName: orderData.parentLastName,
+          email: orderData.parentEmail.toLowerCase().trim(),
+          passcodeHash,
+          tier: tier as 'FREE' | 'MAGIC',
+          extraChildrenCount,
+          stripeCustomerId: session.customer as string || null,
+          stripePaymentId: session.payment_intent as string || null,
+          children: {
+            create: orderData.children.map((child: any) => ({
+              name: child.name,
+              age: parseInt(child.age, 10),
+              trackerId: generateTrackerId(),
+              currentMilestone: 'ELF_SORTING_STATION',
+              milestoneIndex: 0,
+              currentStoryText: "Your letter has just begun its magical journey! Jingles the Elf has been assigned as your letter's personal guide.",
+              letter: {
+                create: {
+                  letterText: child.letterText,
+                  wishlist: child.wishlist || null,
+                  goodThings: child.goodThings || null,
+                  petsAndFamily: child.petsAndFamily || null,
+                },
+              },
+            })),
+          },
+        },
+        include: {
+          children: {
+            include: {
+              letter: true,
+            },
+          },
+        },
       })
 
-      if (customer) {
-        // Update existing customer's tier if upgrading
-        customer = await db.customer.update({
-          where: { id: customer.id },
-          data: {
-            tier: tier,
-            stripeCustomerId: session.customer as string || undefined,
-            stripePaymentId: session.payment_intent as string || undefined,
-          },
-        })
-      } else {
-        // Create new customer
-        customer = await db.customer.create({
-          data: {
-            firstName: orderData.parentFirstName,
-            lastName: orderData.parentLastName,
-            email: orderData.parentEmail,
-            passcodeHash,
-            tier: tier,
-            extraChildrenCount: Math.max(0, orderData.children.length - 1),
-            stripeCustomerId: session.customer as string || undefined,
-            stripePaymentId: session.payment_intent as string || undefined,
-          },
-        })
-      }
+      console.log('Created customer from Stripe webhook:', customer.id)
 
-      // Create children and their letters
-      for (const childData of orderData.children) {
-        const trackerId = generateTrackerId()
-
-        const child = await db.child.create({
-          data: {
-            name: childData.name,
-            age: parseInt(childData.age),
-            trackerId,
-            customerId: customer.id,
-            currentMilestone: 'ELF_SORTING_STATION',
-            milestoneIndex: 0,
-            currentStoryText: 'Your letter has arrived at the Elf Sorting Station! Jingle and Twinkle are carefully reviewing your wishes.',
-          },
-        })
-
-        await db.letter.create({
-          data: {
-            childId: child.id,
-            letterText: childData.letterText,
-            wishlist: childData.wishlist || null,
-            goodThings: childData.goodThings || null,
-            petsAndFamily: childData.petsAndFamily || null,
-          },
-        })
-      }
-
-      // Trigger Make.com webhook for new order (if configured)
+      // Trigger Make.com webhook for new order
       if (process.env.MAKE_WEBHOOK_NEW_ORDER) {
         try {
           await fetch(process.env.MAKE_WEBHOOK_NEW_ORDER, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              customerId: customer.id,
-              email: customer.email,
-              firstName: customer.firstName,
-              lastName: customer.lastName,
+              orderId: customer.id,
+              customer: {
+                id: customer.id,
+                firstName: customer.firstName,
+                lastName: customer.lastName,
+                email: customer.email,
+              },
               tier: customer.tier,
-              childrenCount: orderData.children.length,
-              children: orderData.children.map((c: any) => ({
-                name: c.name,
-                age: c.age,
+              extraChildrenCount: customer.extraChildrenCount,
+              totalPrice: (session.amount_total || 0) / 100,
+              children: customer.children.map((child) => ({
+                id: child.id,
+                name: child.name,
+                age: child.age,
+                trackerId: child.trackerId,
+                trackerUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/track/${child.trackerId}`,
+                letter: child.letter,
               })),
-              paymentId: session.payment_intent,
-              amountPaid: session.amount_total ? session.amount_total / 100 : 0,
+              createdAt: customer.createdAt.toISOString(),
             }),
           })
         } catch (webhookError) {
           console.error('Make.com webhook failed:', webhookError)
-          // Don't fail the order if webhook fails
+          // Don't fail the request if webhook fails
         }
       }
 
-      console.log('Order created successfully for:', customer.email)
     } catch (error) {
       console.error('Error processing webhook:', error)
-      return NextResponse.json({ error: 'Error processing order' }, { status: 500 })
+      return NextResponse.json({ error: 'Processing failed' }, { status: 500 })
     }
   }
 

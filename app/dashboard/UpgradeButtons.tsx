@@ -10,10 +10,10 @@ interface UpgradeButtonsProps {
 }
 
 export function UpgradeButtons({ customerId, currentTier, showUnlock }: UpgradeButtonsProps) {
-  const [isLoading, setIsLoading] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleUpgrade = async (targetTier: string) => {
-    setIsLoading(targetTier)
+  const handleUpgrade = async () => {
+    setIsLoading(true)
     
     try {
       const response = await fetch('/api/upgrade', {
@@ -21,7 +21,7 @@ export function UpgradeButtons({ customerId, currentTier, showUnlock }: UpgradeB
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customerId,
-          targetTier,
+          targetTier: 'MAGIC',
         }),
       })
 
@@ -31,65 +31,41 @@ export function UpgradeButtons({ customerId, currentTier, showUnlock }: UpgradeB
         window.location.href = data.url
       } else {
         console.error('No checkout URL returned')
-        setIsLoading(null)
+        setIsLoading(false)
       }
     } catch (error) {
       console.error('Upgrade error:', error)
-      setIsLoading(null)
+      setIsLoading(false)
     }
   }
 
-  // FREE tier - show both upgrade options
+  // FREE tier - show upgrade to MAGIC
   if (currentTier === 'FREE') {
     if (showUnlock) {
       return (
         <Button 
           variant="gold" 
           size="sm"
-          onClick={() => handleUpgrade('TRACKER')}
-          isLoading={isLoading === 'TRACKER'}
+          onClick={handleUpgrade}
+          isLoading={isLoading}
         >
-          🔓 Unlock Tracker - $14.99
+          🔓 Unlock Tracker - $7.99
         </Button>
       )
     }
 
     return (
-      <div className="flex flex-col sm:flex-row gap-2">
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={() => handleUpgrade('TRACKER')}
-          isLoading={isLoading === 'TRACKER'}
-        >
-          Upgrade to Tracker - $14.99
-        </Button>
-        <Button 
-          variant="gold" 
-          size="sm"
-          onClick={() => handleUpgrade('EXPERIENCE')}
-          isLoading={isLoading === 'EXPERIENCE'}
-        >
-          Upgrade to Full Experience - $19.99
-        </Button>
-      </div>
-    )
-  }
-
-  // TRACKER tier - show upgrade to experience
-  if (currentTier === 'TRACKER') {
-    return (
       <Button 
         variant="gold" 
         size="sm"
-        onClick={() => handleUpgrade('EXPERIENCE')}
-        isLoading={isLoading === 'EXPERIENCE'}
+        onClick={handleUpgrade}
+        isLoading={isLoading}
       >
-        Upgrade to Full Experience - $5.00
+        Upgrade to Santa&apos;s Magic - $7.99 ✨
       </Button>
     )
   }
 
-  // EXPERIENCE tier - no upgrade available
+  // MAGIC tier - no upgrade available
   return null
 }
