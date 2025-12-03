@@ -17,7 +17,7 @@ export interface PricingCardProps {
   popular?: boolean
   ctaText?: string
   ctaLink?: string
-  tier: 'FREE' | 'TRACKER' | 'EXPERIENCE'
+  tier: 'FREE' | 'MAGIC'
 }
 
 export function PricingCard({

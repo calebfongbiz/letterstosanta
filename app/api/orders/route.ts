@@ -7,7 +7,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { generateTrackerId, hashPasscode } from '@/lib/utils'
+import { generateTrackerId } from '@/lib/utils'
+import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Hash the passcode
-    const passcodeHash = await hashPasscode(body.passcode)
+    const passcodeHash = await bcrypt.hash(body.passcode, 10)
 
     // Calculate extra children
     const extraChildrenCount = Math.max(0, body.children.length - 1)

@@ -79,15 +79,11 @@ export default async function DashboardPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <span className="text-2xl">
-                {customer.tier === 'FREE' ? '📧' : customer.tier === 'TRACKER' ? '✈️' : '🎅'}
+                {customer.tier === 'FREE' ? '📧' : '✨'}
               </span>
               <div>
                 <p className="font-semibold text-snow-cream">
-                  {customer.tier === 'FREE'
-                    ? 'Letter to Santa'
-                    : customer.tier === 'TRACKER'
-                    ? "Santa's Tracker"
-                    : 'The Santa Experience'}
+                  {customer.tier === 'FREE' ? 'Letter to Santa' : "Santa's Magic"}
                 </p>
                 <p className="text-snow-cream/50 text-sm">
                   {customer.children.length} child{customer.children.length !== 1 ? 'ren' : ''}
