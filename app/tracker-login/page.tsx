@@ -52,7 +52,7 @@ export default function TrackerLoginPage() {
   }
 
   return (
-    <SectionContainer size="md">
+    <SectionContainer size="md" className="min-h-screen">
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -84,7 +84,7 @@ export default function TrackerLoginPage() {
               type="password"
               value={passcode}
               onChange={(e) => setPasscode(e.target.value)}
-              placeholder="Your 4-6 character passcode"
+              placeholder="Your 4-6 digit passcode"
               autoComplete="current-password"
             />
 
@@ -120,7 +120,7 @@ export default function TrackerLoginPage() {
         <div className="mt-8 p-4 rounded-xl bg-white/5 border border-white/10 text-center">
           <p className="text-snow-cream/60 text-sm">
             🔒 Your passcode was created when you submitted your letter. 
-            It&apos;s the 4-6 character code you chose during registration.
+            It&apos;s the 4-6 digit code you chose during registration.
           </p>
         </div>
       </div>
