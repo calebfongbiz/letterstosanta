@@ -613,21 +613,21 @@ function PricingCardLight({
 function TestimonialsSection() {
   const testimonials = [
     {
-      quote: "My daughter checked the tracker every morning before school. The look of wonder on her face when the letter reached Santa's desk was priceless!",
-      author: 'Sarah M.',
-      location: 'Colorado, USA',
+      quote: "I built this for my 8-year-old stepdaughter. She asked me how Santa actually gets her letter, and I didn't have an answer. Now she tracks it traveling to the North Pole every morning and her face lights up every time.",
+      author: 'Caleb',
+      location: 'Creator & Stepdad',
       rating: 5,
     },
     {
-      quote: "We've done this for 3 years now and it's become our favorite Christmas tradition. The personalized Santa letter made my son believe in magic all over again.",
-      author: 'Michael T.',
-      location: 'Ontario, Canada',
+      quote: "This is our first Christmas offering Letters to Santa to families everywhere. We put our hearts into every detail - from Jingles the Elf's daily updates to Santa's personalized reply.",
+      author: 'Letters to Santa Team',
+      location: 'North Pole HQ 🎅',
       rating: 5,
     },
     {
-      quote: "The attention to detail is incredible. From the elf email updates to the beautiful certificate, everything feels genuinely magical.",
-      author: 'Jennifer L.',
-      location: 'London, UK',
+      quote: "Be one of our first families to experience the magic! We'd love to hear how your kids react to tracking their letter and getting Santa's response.",
+      author: 'Join Us',
+      location: 'Christmas 2025',
       rating: 5,
     },
   ]
