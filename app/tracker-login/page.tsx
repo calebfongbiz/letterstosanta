@@ -9,7 +9,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Button, Card, Input, SectionContainer } from '@/components'
+import { Button, Card, Input } from '@/components'
 
 export default function TrackerLoginPage() {
   const router = useRouter()
@@ -52,7 +52,7 @@ export default function TrackerLoginPage() {
   }
 
   return (
-    <SectionContainer size="md" className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-midnight via-midnight-light to-midnight py-20 px-4">
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -124,6 +124,6 @@ export default function TrackerLoginPage() {
           </p>
         </div>
       </div>
-    </SectionContainer>
+    </div>
   )
 }
