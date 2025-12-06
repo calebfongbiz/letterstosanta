@@ -48,8 +48,6 @@ export default async function TrackerPage({ params }: TrackerPageProps) {
 
   const canAccessTracker = hasTrackerAccess(child.customer.tier)
   const canAccessSantaLetter = hasSantaLetterAccess(child.customer.tier)
-  
-  // Check if letter has reached Santa's desk (milestone index 4 or 5)
   const letterDelivered = child.milestoneIndex >= 4
 
   return (
@@ -79,48 +77,35 @@ export default async function TrackerPage({ params }: TrackerPageProps) {
               />
             </Card>
 
-            {/* Santa letter section for MAGIC tier */}
-            {canAccessSantaLetter && (
+            {/* Santa's Response notification for MAGIC tier when delivered */}
+            {canAccessSantaLetter && letterDelivered && (
               <Card variant="gradient" className="p-6 md:p-8">
-                <h3 className="font-display text-xl font-semibold text-snow-cream mb-4 flex items-center gap-2">
-                  <span>🎅</span>
-                  Santa&apos;s Response
-                </h3>
+                <div className="text-center">
+                  <span className="text-5xl mb-4 block">🎅</span>
+                  <h3 className="font-display text-xl font-semibold text-snow-cream mb-2">
+                    Santa&apos;s Response Has Been Sent!
+                  </h3>
+                  <p className="text-snow-cream/70 max-w-md mx-auto">
+                    Check your email for a special letter from Santa and {child.name}&apos;s 
+                    Official Nice List Certificate! 📧
+                  </p>
+                </div>
+              </Card>
+            )}
 
-                {letterDelivered ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Link
-                      href={`/santa-letter/${child.id}`}
-                      className="flex items-center gap-4 p-4 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
-                    >
-                      <span className="text-4xl">📜</span>
-                      <div>
-                        <p className="font-semibold text-snow-cream">Santa&apos;s Letter</p>
-                        <p className="text-snow-cream/60 text-sm">View & Print</p>
-                      </div>
-                    </Link>
-                    <Link
-                      href={`/certificate/${child.id}`}
-                      className="flex items-center gap-4 p-4 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
-                    >
-                      <span className="text-4xl">⭐</span>
-                      <div>
-                        <p className="font-semibold text-snow-cream">Nice List Certificate</p>
-                        <p className="text-snow-cream/60 text-sm">View & Print</p>
-                      </div>
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <span className="text-5xl mb-4 block animate-bounce-soft">🎁</span>
-                    <p className="text-snow-cream/70">
-                      Santa is working on a special letter for {child.name}!
-                    </p>
-                    <p className="text-snow-cream/50 text-sm mt-2">
-                      Check back once the letter reaches Santa&apos;s Desk.
-                    </p>
-                  </div>
-                )}
+            {/* Waiting message for MAGIC tier before delivery */}
+            {canAccessSantaLetter && !letterDelivered && (
+              <Card variant="gradient" className="p-6 md:p-8">
+                <div className="text-center">
+                  <span className="text-5xl mb-4 block animate-bounce-soft">🎁</span>
+                  <h3 className="font-display text-xl font-semibold text-snow-cream mb-2">
+                    Santa&apos;s Response is Coming!
+                  </h3>
+                  <p className="text-snow-cream/70 max-w-md mx-auto">
+                    Once {child.name}&apos;s letter reaches Santa&apos;s desk, you&apos;ll receive 
+                    a personalized letter from Santa and an Official Nice List Certificate via email!
+                  </p>
+                </div>
               </Card>
             )}
 
