@@ -8,7 +8,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { MILESTONES } from '@/lib/types'
+import { MILESTONE_ORDER } from '@/lib/types'
 
 // Verify the request is from our cron job
 function verifyAuth(request: NextRequest): boolean {
@@ -252,7 +252,7 @@ export async function POST(request: NextRequest) {
 
     for (const child of children) {
       const newIndex = child.milestoneIndex + 1
-      const newMilestone = MILESTONES[newIndex]
+      const newMilestone = MILESTONE_ORDER[newIndex]
       const newStoryText = STORY_TEXT[newMilestone] || ''
 
       // Update the child's milestone
