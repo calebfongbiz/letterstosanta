@@ -1,12 +1,12 @@
 /**
- * Get Child Data API
+ * Get Child Data API (Public)
  * 
  * GET /api/child/[childId]
  * Returns child data for Santa letter and certificate pages
+ * Security: childId is a random UUID that's hard to guess
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getSession } from '@/lib/session'
 import { db } from '@/lib/db'
 
 export async function GET(
@@ -15,11 +15,6 @@ export async function GET(
 ) {
   try {
     const { childId } = await params
-    const session = await getSession()
-
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
 
     const child = await db.child.findUnique({
       where: { id: childId },
@@ -31,11 +26,6 @@ export async function GET(
 
     if (!child) {
       return NextResponse.json({ error: 'Child not found' }, { status: 404 })
-    }
-
-    // Verify the logged-in user owns this child
-    if (child.customerId !== session.customerId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
     // Only allow MAGIC tier to access
