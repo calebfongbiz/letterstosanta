@@ -323,7 +323,7 @@ export default function WriteLetterPage() {
                     required
                   />
                   <p className="text-snow-cream/50 text-xs -mt-2">
-                    You&apos;ll use your last name and this passcode to log in and check the tracker
+                    You&apos;ll use your email and this passcode to log in and check the tracker
                   </p>
                 </div>
 
