@@ -208,6 +208,19 @@ function HowItWorksSection() {
           </p>
         </div>
 
+        {/* Video */}
+        <div className="max-w-3xl mx-auto mb-16">
+          <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
+            <iframe
+              src="https://www.youtube.com/embed/RLxNhicjMJI"
+              title="How Letters to Santa Works"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
           {steps.map((step, index) => (
             <div key={step.step} className="relative">
