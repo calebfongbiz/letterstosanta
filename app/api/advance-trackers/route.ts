@@ -2,242 +2,317 @@
  * Advance Trackers API Route
  * 
  * POST /api/advance-trackers
- * Advances all children's trackers by 1 milestone AND sends daily story emails.
- * Called daily by Make.com scheduler.
+ * Called daily by Make.com to advance all trackers by one milestone
+ * and send story emails to parents.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { MILESTONES } from '@/lib/types'
 
-// Milestone order for progression
-const MILESTONE_ORDER = [
-  'ELF_SORTING_STATION',
-  'CANDY_CANE_FOREST',
-  'REINDEER_RUNWAY',
-  'AURORA_GATE',
-  'SANTAS_DESK',
-  'NORTH_POLE_WORKSHOP',
-] as const
-
-// Story text for each milestone
-const MILESTONE_STORIES: Record<string, string> = {
-  ELF_SORTING_STATION: "Your letter has arrived at the Elf Sorting Station! Jingles the Delivery Elf has been assigned as your letter's personal guide for this magical journey.",
-  CANDY_CANE_FOREST: "Your letter is traveling through the enchanted Candy Cane Forest! The Sugar Sprites are cheering it on as Jingles guides it through the peppermint paths.",
-  REINDEER_RUNWAY: "Your letter has reached Reindeer Runway! Dasher gave it an approving sniff, and Rudolph's nose glowed extra bright when he saw it.",
-  AURORA_GATE: "Your letter is passing through the magnificent Aurora Gate! The northern lights wrapped around it, infusing it with extra North Pole magic.",
-  SANTAS_DESK: "YOUR LETTER HAS BEEN DELIVERED! Santa himself read your letter with a warm smile and twinkling eyes. The magic of Christmas is now in full swing!",
-  NORTH_POLE_WORKSHOP: "Your letter's journey is complete! It's now safely with Santa, who has shared your wishes with his team of master toymakers.",
+// Verify the request is from our cron job
+function verifyAuth(request: NextRequest): boolean {
+  const authHeader = request.headers.get('authorization')
+  const expectedToken = `Bearer ${process.env.CRON_SECRET}`
+  return authHeader === expectedToken
 }
 
-// Daily story emails from Jingles the Elf
-const DAILY_EMAILS = {
-  // Day 1 - After arriving at Elf Sorting Station (milestoneIndex 0, moving to 1)
-  1: {
-    subject: "🍬 Traveling Through the Candy Cane Forest! 🍬",
-    body: `Hello again, friend!
-
-Jingles here with your daily letter update!
-
-We made it to the Candy Cane Forest this morning, and OH MY SNOWBALLS, it's beautiful! The trees here aren't like regular trees - they're actual giant candy canes that twist up toward the sky, with peppermint leaves that tinkle like bells when the wind blows.
-
-Your letter is doing wonderfully! I've got it tucked safely in my enchanted satchel, which keeps everything warm and protected from the occasional gumdrop rain shower (yes, it rains gumdrops here - the red ones are my favorite!).
-
-We met some Sugar Sprites along the path today. They're tiny little creatures made of crystallized sugar who help guide travelers through the forest. They took one look at your letter and started cheering! They said they could sense all the love and Christmas wishes inside.
-
-We're about halfway through the forest now, resting by a stream that flows with liquid candy cane. Tomorrow we'll reach the edge of the forest and head toward the Reindeer Runway!
-
-Your letter keeps humming Christmas carols. I think it's excited!
-
-Peppermint kisses and candy cane wishes,
-🧝 Jingles
-
-P.S. I tried to bring you a gumdrop but it melted in my pocket. Sorry about that!`
-  },
-  
-  // Day 2 - At Candy Cane Forest, moving to Reindeer Runway (milestoneIndex 1, moving to 2)
-  2: {
-    subject: "🦌 Your Letter Just Met the Reindeer! 🦌",
-    body: `GUESS WHAT GUESS WHAT GUESS WHAT!!!
-
-It's Jingles, and I can barely hold my quill steady because I'm SO excited to tell you where we are!
-
-THE REINDEER RUNWAY!
-
-This is where Santa's famous reindeer live and train for their big Christmas Eve flight. And oh my jingle bells, they are even more magnificent in person! Their fur shimmers like starlight, and when they run, they leave little trails of sparkles behind them.
-
-Your letter got a VERY special honor today. Dasher - yes, THE Dasher - came over to inspect our mail delivery. He sniffed your letter gently (reindeer can smell Christmas spirit, did you know that?) and gave an approving nod! Rudolph even stopped by during his evening practice flight. His nose really DOES glow that bright - I had to squint!
-
-We're staying in the Reindeer Lodge tonight. It's a cozy cabin with a fireplace, and all the delivery elves gather here to share stories. Your letter is resting on a special velvet pillow by the fire.
-
-Tomorrow we head to the Aurora Gateway - the most magical part of the journey!
-
-With reindeer dust and starlight,
-🧝 Jingles
-
-P.S. Blitzen wanted me to tell you that you're doing a great job being good this year. Reindeer just KNOW these things!`
-  },
-  
-  // Day 3 - At Reindeer Runway, moving to Aurora Gate (milestoneIndex 2, moving to 3)
-  3: {
-    subject: "🌌 The Northern Lights Are Guiding Us! 🌌",
-    body: `Dear wonderful friend,
-
-I'm writing to you tonight under the most spectacular sky you could ever imagine.
-
-We've reached the Aurora Gateway, and I had to stop everything just to take it all in. The Northern Lights here aren't just IN the sky - they reach all the way down to the ground like shimmering curtains of green, purple, and gold. We're actually walking THROUGH them!
-
-When your letter passed through the lights, something magical happened. The aurora wrapped around it like a gentle hug and infused it with extra North Pole magic. I saw it glow for a moment - this beautiful, warm golden light - and then settle back into my satchel with a happy little sigh.
-
-This gateway is special because it's the final passage before Santa's village. Only letters filled with true Christmas spirit can pass through. The aurora can sense what's in your heart when you wrote your letter, and I'm proud to tell you...
-
-Your letter passed with FLYING colors! Literally - a little rainbow shot out of my satchel when we crossed through!
-
-Tomorrow is the big day. We'll arrive at Santa's Workshop, and I'll personally deliver your letter to the big man himself.
-
-I'm getting a little emotional, honestly. I've carried thousands of letters over the years, but each one is special.
-
-With aurora sparkles and grateful heart,
-🧝 Jingles
-
-P.S. I caught some aurora light in a jar for you. It's sitting on Santa's mantle now, glowing softly with your name on it.`
-  },
-  
-  // Day 4 - At Aurora Gate, moving to Santa's Desk (milestoneIndex 3, moving to 4)
-  4: {
-    subject: "🎅 YOUR LETTER HAS BEEN DELIVERED TO SANTA! 🎅",
-    body: `WE DID IT!!!
-
-*throws confetti made of snowflakes*
-
-Friend, I am OVERJOYED to tell you that your letter has officially been delivered to Santa's Workshop!
-
-I placed it directly into Santa's hands this morning. You should have seen him! His eyes got that special twinkle (you know the one), and he settled into his big red chair by the fire to read it right away. Mrs. Claus brought him his special reading glasses - the ones with tiny stars on the frames - and a cup of cocoa.
-
-I waited nearby (trying not to peek, but it was SO hard!) and when he finished reading, he looked up with the biggest, warmest smile. He patted the letter gently and said:
-
-"This one. This is a GOOD one, Jingles."
-
-Then he added your letter to his special stack - the ones he keeps closest to his desk while the elves work on their Christmas magic.
-
-Your letter's journey is complete, but the magic is just beginning! Santa has read your wishes, knows about all the wonderful things you've done, and is already thinking about Christmas morning.
-
-Thank you for letting me be your letter's guide. It has been the greatest honor of my 127 elf years.
-
-May your Christmas be filled with wonder, love, and just the right amount of cookie crumbs.
-
-Forever your friend,
-🧝 Jingles the Delivery Elf
-
-P.S. Santa says to keep being YOU. That's the best gift of all. 🎁
-
----
-
-🎄 YOUR LETTER STATUS: ✅ DELIVERED TO SANTA'S WORKSHOP 🎄
-
-Log in to see the final update: https://letterstosanta.vercel.app/tracker-login`
-  },
-}
-
-// Send email via Make.com webhook (or you can use a direct email service)
-async function sendStoryEmail(
-  parentEmail: string,
+// Generate beautiful HTML email for Jingles story updates
+function generateJinglesEmail(
   parentFirstName: string,
   childName: string,
   dayNumber: number
-) {
-  const emailData = DAILY_EMAILS[dayNumber as keyof typeof DAILY_EMAILS]
-  if (!emailData) return
-
-  // Personalize the subject with child's name
-  const subject = `${childName}'s Letter Update: ${emailData.subject}`
+): { subject: string; html: string } {
   
-  // Add greeting to body
-  const body = `Hi ${parentFirstName}! Here's today's update on ${childName}'s letter:\n\n${emailData.body}`
+  const stories: Record<number, { subject: string; location: string; emoji: string; story: string; signoff: string }> = {
+    1: {
+      subject: `🍬 ${childName}'s Letter is in the Candy Cane Forest!`,
+      location: "Candy Cane Forest",
+      emoji: "🍬",
+      story: `The most amazing thing happened today! Your letter floated right into the Candy Cane Forest, where the trees are made of real, swirly peppermint sticks that reach all the way up to the clouds!
 
-  // Send via Make.com webhook for emails
-  if (process.env.MAKE_WEBHOOK_DAILY_EMAIL) {
-    try {
-      await fetch(process.env.MAKE_WEBHOOK_DAILY_EMAIL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: parentEmail,
-          subject,
-          body,
-          childName,
-          parentFirstName,
-          dayNumber,
-        }),
-      })
-    } catch (error) {
-      console.error(`Failed to send day ${dayNumber} email to ${parentEmail}:`, error)
+I met some Sugar Sprites who sprinkled your letter with extra sparkle dust. They said your letter smells like Christmas cookies and hot cocoa - that means it's EXTRA special!
+
+The path ahead leads to the Reindeer Runway. I can already hear the jingle bells in the distance!`,
+      signoff: "Sweet wishes and peppermint kisses"
+    },
+    2: {
+      subject: `🦌 ${childName}'s Letter Just Met the Reindeer!`,
+      location: "Reindeer Runway",
+      emoji: "🦌",
+      story: `You won't believe what happened today! We made it to the Reindeer Runway, and guess who was there? DASHER AND DANCER!
+
+They did the official Reindeer Inspection (it's a real thing, I promise!). Dasher sniffed your letter and his nose twitched with happiness. Dancer did a little hop - that's how reindeer say "This letter is APPROVED!"
+
+Even Rudolph flew by and his nose glowed extra bright when he saw your letter. Tomorrow we head to the Aurora Gate - the most magical checkpoint of all!`,
+      signoff: "With jingle bells and reindeer dust"
+    },
+    3: {
+      subject: `🌌 ${childName}'s Letter is Passing Through the Northern Lights!`,
+      location: "Aurora Gate",
+      emoji: "✨",
+      story: `Oh my snowflakes, today was BREATHTAKING! We reached the Aurora Gate, where the Northern Lights dance across the sky in ribbons of green, purple, and blue!
+
+Your letter had to pass through the magical lights - it's like a special checkpoint that only the most heartfelt letters can cross. And guess what? Your letter started GLOWING! That means it's filled with so much love and Christmas spirit!
+
+The lights whispered that Santa is going to love reading this one. Tomorrow... we finally reach Santa's desk!`,
+      signoff: "With stardust and aurora dreams"
+    },
+    4: {
+      subject: `🎅 ${childName}'s Letter Has Been DELIVERED TO SANTA!`,
+      location: "Santa's Desk",
+      emoji: "🎅",
+      story: `WE DID IT! WE DID IT! *does happy elf dance*
+
+Your letter is now sitting right on Santa's desk at the North Pole! I watched Santa pick it up with his big, warm hands. He put on his reading glasses (yes, Santa wears glasses for reading!), and you know what he did?
+
+HE SMILED. That big, jolly, warm Santa smile that makes his eyes twinkle like stars.
+
+He told me to tell you that he's so proud of all the good things you've done this year. Your letter made his heart feel as warm as hot cocoa by the fireplace.
+
+This has been the most magical journey, and I'm so glad I got to be your letter's guide!`,
+      signoff: "With the biggest elf hug ever"
     }
   }
+
+  const day = stories[dayNumber]
+  if (!day) return { subject: '', html: '' }
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #1a1a2e; font-family: Georgia, 'Times New Roman', serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #1a1a2e;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width: 600px; width: 100%;">
+          <tr>
+            <td align="center" style="padding-bottom: 20px;">
+              <span style="font-size: 40px;">❄️ ⭐ ❄️</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background: linear-gradient(135deg, #2d5a4a 0%, #1e3d32 100%); border-radius: 20px; border: 3px solid #d4af37;">
+                <tr>
+                  <td style="background-color: #d4af37; height: 8px; border-radius: 17px 17px 0 0;"></td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding: 30px 20px 10px 20px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="background-color: #c41e3a; border-radius: 30px; padding: 10px 25px;">
+                          <span style="color: #ffffff; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+                            ${day.emoji} ${day.location} ${day.emoji}
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding: 20px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="background-color: #c41e3a; width: 80px; height: 80px; border-radius: 50%; text-align: center; vertical-align: middle; border: 4px solid #d4af37; font-size: 40px;">
+                          🧝
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding: 0 40px 20px 40px;">
+                    <h1 style="color: #d4af37; font-size: 28px; margin: 0; font-style: italic;">
+                      A Message from Jingles!
+                    </h1>
+                    <p style="color: #a8d5ba; font-size: 16px; margin: 10px 0 0 0;">
+                      Special Update for ${childName}
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 0 40px 30px 40px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: rgba(255,255,255,0.1); border-radius: 15px; border: 1px solid rgba(255,255,255,0.2);">
+                      <tr>
+                        <td style="padding: 25px;">
+                          <p style="color: #ffffff; font-size: 17px; line-height: 1.8; margin: 0 0 20px 0;">
+                            Dear ${childName},
+                          </p>
+                          <p style="color: #e8e8e8; font-size: 16px; line-height: 1.9; margin: 0; white-space: pre-line;">${day.story}</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding: 0 40px 30px 40px;">
+                    <p style="color: #d4af37; font-size: 18px; font-style: italic; margin: 0;">
+                      ${day.signoff},
+                    </p>
+                    <p style="color: #ffffff; font-size: 22px; font-weight: bold; margin: 10px 0 0 0;">
+                      🎄 Jingles the Elf 🎄
+                    </p>
+                    <p style="color: #a8d5ba; font-size: 14px; margin: 5px 0 0 0;">
+                      Official Letter Guide, North Pole Mail Division
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 0 40px 30px 40px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="background-color: rgba(255,255,255,0.2); border-radius: 10px; padding: 15px;">
+                          <p style="color: #a8d5ba; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px 0; text-align: center;">
+                            Letter Journey Progress
+                          </p>
+                          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                              <td style="background-color: rgba(255,255,255,0.3); border-radius: 5px; height: 10px;">
+                                <table role="presentation" width="${(dayNumber + 1) * 20}%" cellspacing="0" cellpadding="0">
+                                  <tr>
+                                    <td style="background: linear-gradient(90deg, #165b33, #d4af37, #c41e3a); border-radius: 5px; height: 10px;"></td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+                          <p style="color: #ffffff; font-size: 11px; margin: 8px 0 0 0; text-align: center;">
+                            ${dayNumber === 4 ? '🎉 DELIVERED!' : `Day ${dayNumber + 1} of 5 - ${4 - dayNumber} day${4 - dayNumber !== 1 ? 's' : ''} until delivery!`}
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background-color: #d4af37; height: 8px; border-radius: 0 0 17px 17px;"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 30px 20px;">
+              <p style="color: #888888; font-size: 12px; margin: 0;">
+                ❄️ This magical message was sent from the North Pole ❄️
+              </p>
+              <p style="color: #666666; font-size: 11px; margin: 10px 0 0 0;">
+                Letters to Santa™ • Keeping the magic alive
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+
+  return { subject: day.subject, html }
+}
+
+// Story text for each milestone
+const STORY_TEXT: Record<string, string> = {
+  ELF_SORTING_STATION: "Your letter has just begun its magical journey! Jingles the Elf has been assigned as your letter's personal guide.",
+  CANDY_CANE_FOREST: "Your letter is floating through the Candy Cane Forest! The Sugar Sprites are sprinkling it with extra sparkle dust.",
+  REINDEER_RUNWAY: "Dasher and Dancer have officially approved your letter! Even Rudolph's nose glowed extra bright.",
+  AURORA_GATE: "Your letter passed through the magical Northern Lights and it started GLOWING with Christmas spirit!",
+  SANTAS_DESK: "DELIVERED! Santa has read your letter and he smiled his big, jolly smile. He's so proud of you!",
+  NORTH_POLE_WORKSHOP: "Your letter's journey is complete! Santa has added it to his very special stack."
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    // Verify authorization
-    const authHeader = request.headers.get('authorization')
-    const expectedToken = `Bearer ${process.env.CRON_SECRET || 'santa-cron-secret-2024'}`
-    
-    if (authHeader !== expectedToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+  // Verify authentication
+  if (!verifyAuth(request)) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
 
+  try {
     // Get all children who haven't reached the final milestone
     const children = await db.child.findMany({
       where: {
         milestoneIndex: {
-          lt: MILESTONE_ORDER.length - 1, // Not at final milestone yet
-        },
+          lt: 5 // Less than final milestone (NORTH_POLE_WORKSHOP)
+        }
       },
       include: {
-        customer: true,
-      },
+        customer: true
+      }
     })
 
     let advancedCount = 0
     let emailsSent = 0
 
-    // Advance each child's tracker by 1 milestone
     for (const child of children) {
       const newIndex = child.milestoneIndex + 1
-      const newMilestone = MILESTONE_ORDER[newIndex]
-      const newStory = MILESTONE_STORIES[newMilestone]
+      const newMilestone = MILESTONES[newIndex]
+      const newStoryText = STORY_TEXT[newMilestone] || ''
 
+      // Update the child's milestone
       await db.child.update({
         where: { id: child.id },
         data: {
           milestoneIndex: newIndex,
           currentMilestone: newMilestone,
-          currentStoryText: newStory,
-        },
+          currentStoryText: newStoryText
+        }
       })
 
       advancedCount++
 
-      // Send daily story email (days 1-4 send emails, day 5 is final)
-      // Email number corresponds to the day they're moving TO
+      // Send story email for days 1-4 (indices 1-4)
+      // Day 0 = ELF_SORTING_STATION (no email, starting point)
+      // Day 1 = CANDY_CANE_FOREST (email 1)
+      // Day 2 = REINDEER_RUNWAY (email 2)
+      // Day 3 = AURORA_GATE (email 3)
+      // Day 4 = SANTAS_DESK (email 4)
+      // Day 5 = NORTH_POLE_WORKSHOP (no email, journey complete)
       if (newIndex >= 1 && newIndex <= 4) {
-        await sendStoryEmail(
-          child.customer.email,
-          child.customer.firstName,
-          child.name,
-          newIndex
-        )
-        emailsSent++
+        const webhookUrl = process.env.MAKE_WEBHOOK_DAILY_EMAIL
+        
+        if (webhookUrl) {
+          try {
+            const { subject, html } = generateJinglesEmail(
+              child.customer.firstName,
+              child.name,
+              newIndex
+            )
+
+            await fetch(webhookUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                to: child.customer.email,
+                subject: subject,
+                html: html,
+                childName: child.name,
+                parentFirstName: child.customer.firstName,
+                dayNumber: newIndex
+              })
+            })
+
+            emailsSent++
+          } catch (emailError) {
+            console.error(`Failed to send email for child ${child.id}:`, emailError)
+          }
+        }
       }
     }
-
-    console.log(`Advanced ${advancedCount} trackers, sent ${emailsSent} emails`)
 
     return NextResponse.json({
       success: true,
       advancedCount,
       emailsSent,
-      message: `Advanced ${advancedCount} trackers and sent ${emailsSent} story emails`,
+      message: `Advanced ${advancedCount} trackers and sent ${emailsSent} story emails`
     })
+
   } catch (error) {
     console.error('Advance trackers error:', error)
     return NextResponse.json(
