@@ -1,0 +1,149 @@
+/**
+ * Nice List Certificate Page
+ * 
+ * Displays a beautiful certificate that can be printed/saved as PDF
+ */
+
+import { redirect, notFound } from 'next/navigation'
+import { getSession } from '@/lib/session'
+import { db } from '@/lib/db'
+
+interface CertificatePageProps {
+  params: Promise<{
+    childId: string
+  }>
+}
+
+export default async function CertificatePage({ params }: CertificatePageProps) {
+  const { childId } = await params
+  const session = await getSession()
+
+  if (!session) {
+    redirect('/tracker-login')
+  }
+
+  const child = await db.child.findUnique({
+    where: { id: childId },
+    include: {
+      customer: true,
+    },
+  })
+
+  if (!child || child.customerId !== session.customerId) {
+    notFound()
+  }
+
+  if (child.customer.tier !== 'MAGIC') {
+    redirect('/dashboard')
+  }
+
+  const currentYear = new Date().getFullYear()
+
+  return (
+    <div className="min-h-screen bg-midnight py-8 px-4 print:bg-white print:py-0">
+      {/* Print button - hidden when printing */}
+      <div className="max-w-4xl mx-auto mb-4 print:hidden">
+        <button 
+          onClick={() => window.print()}
+          className="bg-gold text-midnight px-6 py-2 rounded-full font-semibold hover:bg-gold-light transition-colors"
+        >
+          🖨️ Print / Save as PDF
+        </button>
+      </div>
+
+      {/* Certificate */}
+      <div className="max-w-4xl mx-auto aspect-[1.4/1] bg-gradient-to-br from-amber-50 via-white to-amber-50 rounded-lg shadow-2xl overflow-hidden print:shadow-none print:rounded-none border-8 border-double border-gold">
+        <div className="h-full flex flex-col p-8 md:p-12 relative">
+          {/* Decorative corners */}
+          <div className="absolute top-4 left-4 text-4xl">❄️</div>
+          <div className="absolute top-4 right-4 text-4xl">❄️</div>
+          <div className="absolute bottom-4 left-4 text-4xl">🎄</div>
+          <div className="absolute bottom-4 right-4 text-4xl">🎄</div>
+
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="text-5xl mb-2">⭐</div>
+            <h1 className="text-red-800 text-xl md:text-2xl tracking-[0.3em] font-bold">
+              OFFICIAL NORTH POLE DOCUMENT
+            </h1>
+          </div>
+
+          {/* Title */}
+          <div className="text-center flex-grow flex flex-col justify-center">
+            <h2 className="text-green-800 text-4xl md:text-6xl font-serif font-bold mb-2">
+              Nice List
+            </h2>
+            <h3 className="text-red-700 text-3xl md:text-5xl font-serif font-bold mb-8">
+              Certificate
+            </h3>
+
+            {/* This certifies */}
+            <p className="text-gray-600 text-lg md:text-xl mb-4">
+              This is to certify that
+            </p>
+
+            {/* Name */}
+            <div className="relative inline-block mx-auto mb-4">
+              <p className="text-red-800 text-4xl md:text-6xl font-script px-8 py-2" style={{ fontFamily: 'cursive' }}>
+                {child.name}
+              </p>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+            </div>
+
+            {/* Certificate text */}
+            <p className="text-gray-700 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+              has been officially recognized by Santa Claus and placed on the
+            </p>
+            <p className="text-green-700 text-2xl md:text-3xl font-bold mt-2 mb-4">
+              ✨ Official Nice List for {currentYear} ✨
+            </p>
+            <p className="text-gray-600 text-base md:text-lg max-w-xl mx-auto">
+              for demonstrating kindness, good behavior, and the true spirit of Christmas
+            </p>
+          </div>
+
+          {/* Footer with signatures */}
+          <div className="flex justify-between items-end mt-8 pt-6 border-t-2 border-gold/30">
+            {/* Santa signature */}
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-script text-red-800 mb-1" style={{ fontFamily: 'cursive' }}>
+                Santa Claus
+              </div>
+              <div className="w-32 md:w-40 h-0.5 bg-gray-400 mx-auto mb-1"></div>
+              <p className="text-gray-500 text-xs md:text-sm">Santa Claus</p>
+              <p className="text-gray-400 text-xs">Chief Gift Giver</p>
+            </div>
+
+            {/* Seal */}
+            <div className="text-center">
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-red-700 to-red-900 flex items-center justify-center shadow-lg border-4 border-gold">
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl">🎅</div>
+                  <div className="text-amber-200 text-[8px] md:text-xs font-bold">NORTH POLE</div>
+                </div>
+              </div>
+              <p className="text-gray-400 text-xs mt-1">Official Seal</p>
+            </div>
+
+            {/* Mrs Claus signature */}
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-script text-red-800 mb-1" style={{ fontFamily: 'cursive' }}>
+                Mrs. Claus
+              </div>
+              <div className="w-32 md:w-40 h-0.5 bg-gray-400 mx-auto mb-1"></div>
+              <p className="text-gray-500 text-xs md:text-sm">Mrs. Claus</p>
+              <p className="text-gray-400 text-xs">Head of Nice List Review</p>
+            </div>
+          </div>
+
+          {/* Bottom text */}
+          <div className="text-center mt-4">
+            <p className="text-gray-400 text-xs">
+              Certificate #{child.id.slice(-8).toUpperCase()} • Issued December {currentYear} • North Pole, Arctic Circle
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
