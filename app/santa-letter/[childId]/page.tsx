@@ -4,6 +4,7 @@
  * Santa's Letter Page
  * 
  * Displays a beautifully formatted letter from Santa that can be printed/saved as PDF
+ * Uses AI-generated personalized letter content
  */
 
 import { useEffect, useState } from 'react'
@@ -11,6 +12,7 @@ import { useParams } from 'next/navigation'
 
 interface ChildData {
   name: string
+  santaLetter?: string
   letter?: {
     wishlist?: string
     goodThings?: string
@@ -44,7 +46,10 @@ export default function SantaLetterPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-red-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading Santa&apos;s Letter...</div>
+        <div className="text-center">
+          <div className="text-6xl mb-4 animate-bounce">🎅</div>
+          <div className="text-white text-xl">Santa is writing your letter...</div>
+        </div>
       </div>
     )
   }
@@ -57,12 +62,8 @@ export default function SantaLetterPage() {
     )
   }
 
-  const wishlist = child.letter?.wishlist || ''
-  const goodThings = child.letter?.goodThings || ''
-  const petsAndFamily = child.letter?.petsAndFamily || ''
-  
-  const wishes = wishlist ? wishlist.split(',').map(w => w.trim()).filter(w => w).slice(0, 3) : []
-  const goodDeeds = goodThings ? goodThings.split(',').map(g => g.trim()).filter(g => g).slice(0, 3) : []
+  // Use AI-generated letter or fall back to basic version
+  const letterContent = child.santaLetter || generateFallbackLetter(child)
 
   return (
     <div className="min-h-screen bg-red-900 py-8 px-4 print:bg-white print:py-0">
@@ -96,77 +97,16 @@ export default function SantaLetterPage() {
             December {new Date().getFullYear()}
           </p>
 
-          {/* Greeting */}
-          <p className="text-2xl text-red-800 mb-6">
-            Ho Ho Ho, Dear {child.name}! 🎄
-          </p>
-
-          {/* Body */}
-          <div className="space-y-4 text-gray-800 text-lg leading-relaxed">
-            <p>
-              Merry Christmas from the North Pole! I received your wonderful letter, 
-              and it warmed my heart like a cup of hot cocoa by the fire! Mrs. Claus 
-              and I read it together, and we both agreed it was one of the most special 
-              letters we&apos;ve received this year.
-            </p>
-
-            {goodDeeds.length > 0 && (
-              <p>
-                I&apos;ve been watching, and I&apos;m SO proud of you for{' '}
-                <span className="text-red-700 font-semibold">{goodDeeds[0].toLowerCase()}</span>
-                {goodDeeds.length > 1 && (
-                  <>, and <span className="text-red-700 font-semibold">{goodDeeds[1].toLowerCase()}</span> too</>
-                )}! That&apos;s exactly the kind of thing that puts a big smile on my face 
-                and makes Rudolph&apos;s nose glow extra bright!
-              </p>
-            )}
-
-            {wishes.length > 0 && (
-              <p>
-                Now, about your Christmas wishes... I&apos;ve made a special note about{' '}
-                <span className="text-green-700 font-semibold">{wishes[0]}</span>
-                {wishes.length > 1 && (
-                  <>, and <span className="text-green-700 font-semibold">{wishes[1]}</span> sounds wonderful too</>
-                )}! The elves are very busy in the workshop, and I&apos;ve asked them to 
-                pay extra special attention to your list.
-              </p>
-            )}
-
-            {petsAndFamily && (
-              <p>
-                Please give my warm wishes to your family
-                {(petsAndFamily.toLowerCase().includes('dog') || 
-                  petsAndFamily.toLowerCase().includes('cat') || 
-                  petsAndFamily.toLowerCase().includes('pet')) && (
-                  <> and a special pat to your furry friends</>
-                )}!
-              </p>
-            )}
-
-            <p>
-              Remember, {child.name}, Christmas is about love, kindness, and being 
-              together with the people we care about. You&apos;ve shown so much of that 
-              this year, and it makes me very happy.
-            </p>
-
-            <p>
-              Keep being the amazing person you are, and always believe in the magic 
-              of Christmas!
-            </p>
+          {/* Letter body - preserving line breaks */}
+          <div className="text-gray-800 text-lg leading-relaxed whitespace-pre-line">
+            {letterContent}
           </div>
 
-          {/* Sign off */}
-          <div className="mt-10">
-            <p className="text-gray-800 text-lg mb-4">
-              With love and jingle bells,
-            </p>
+          {/* Signature */}
+          <div className="mt-8">
             <div className="text-4xl text-red-800" style={{ fontFamily: 'cursive' }}>
               🎅 Santa Claus
             </div>
-            <p className="text-gray-600 text-sm mt-4 italic">
-              P.S. The reindeer say hello! Rudolph wanted me to tell you that your 
-              letter made his nose glow extra bright! ✨
-            </p>
           </div>
         </div>
 
@@ -182,4 +122,46 @@ export default function SantaLetterPage() {
       </div>
     </div>
   )
+}
+
+// Fallback letter if AI generation fails
+function generateFallbackLetter(child: ChildData): string {
+  const name = child.name
+  const wishlist = child.letter?.wishlist
+  const goodThings = child.letter?.goodThings
+  const petsAndFamily = child.letter?.petsAndFamily
+
+  let letter = `Ho Ho Ho, Dear ${name}! 🎄
+
+Merry Christmas from the North Pole! I received your wonderful letter, and it warmed my heart like a cup of hot cocoa by the fire! Mrs. Claus and I read it together, and we both agreed it was one of the most special letters we've received this year.
+
+`
+
+  if (goodThings) {
+    letter += `I've been watching, and I'm SO proud of all the good things you've been doing. That's exactly the kind of thing that puts a big smile on my face and makes Rudolph's nose glow extra bright!
+
+`
+  }
+
+  if (wishlist) {
+    letter += `Now, about your Christmas wishes... I've made special notes about everything you mentioned! The elves are very busy in the workshop, and I've asked them to pay extra special attention to your list.
+
+`
+  }
+
+  if (petsAndFamily) {
+    letter += `Please give my warm wishes to your family and anyone special in your life!
+
+`
+  }
+
+  letter += `Remember, ${name}, Christmas is about love, kindness, and being together with the people we care about. You've shown so much of that this year, and it makes me very happy.
+
+Keep being the amazing person you are, and always believe in the magic of Christmas!
+
+With love and jingle bells,
+
+P.S. The reindeer say hello! Rudolph wanted me to tell you that your letter made his nose glow extra bright! ✨`
+
+  return letter
 }
