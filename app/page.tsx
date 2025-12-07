@@ -782,7 +782,7 @@ function FinalCtaSection() {
             Ready to Create Some Christmas Magic?
           </h2>
           <p className="text-gray-600 text-lg mb-10">
-            Join thousands of families who have made Letters to Santa part of their holiday tradition. 
+            Be one of the first families to make Letters to Santa part of their holiday tradition. 
             Start your child&apos;s magical journey today.
           </p>
 
