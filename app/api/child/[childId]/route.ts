@@ -78,7 +78,7 @@ export async function GET(
     }
 
     // Generate or retrieve cached Santa letter
-    let santaLetter = letterCache.get(childId)
+    let santaLetter: string | undefined = letterCache.get(childId)
     
     if (!santaLetter && process.env.ANTHROPIC_API_KEY) {
       try {
@@ -93,7 +93,7 @@ export async function GET(
       } catch (error) {
         console.error('Error generating Santa letter:', error)
         // Fall back to basic letter if AI fails
-        santaLetter = null
+        santaLetter = undefined
       }
     }
 
