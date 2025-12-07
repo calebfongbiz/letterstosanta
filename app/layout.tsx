@@ -1,11 +1,11 @@
 /**
- * Root Layout
- * 
- * Main application layout - updated for light theme.
- */
+* Root Layout
+*
+* Main application layout - updated for light theme.
+*/
 
 import type { Metadata } from 'next'
-import { Navbar, Footer } from '@/components'
+import { Navbar, Footer, MetaPixel } from '@/components'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -35,6 +35,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="min-h-screen flex flex-col bg-white">
+        {/* Meta Pixel */}
+        <MetaPixel />
+        
         {/* Navigation */}
         <Navbar />
 

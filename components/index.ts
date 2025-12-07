@@ -21,3 +21,4 @@ export { Snowfall } from './Snowfall'
 
 // Form Components
 export { Input, Textarea, Select, FileInput, FormSection } from './FormInputs'
+export { default as MetaPixel } from './MetaPixel'
