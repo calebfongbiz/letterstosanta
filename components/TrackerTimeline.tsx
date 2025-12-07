@@ -114,7 +114,7 @@ export function TrackerTimeline({
           {/* Video Section - Current Milestone */}
           {showVideo && (
             <div className="mb-8">
-              <div className="relative aspect-video rounded-xl overflow-hidden bg-black/50 border border-white/10">
+              <div className="relative aspect-[9/16] max-h-[500px] rounded-xl overflow-hidden bg-black/50 border border-white/10">
                 {/* Video element */}
                 <video
                   ref={videoRef}
