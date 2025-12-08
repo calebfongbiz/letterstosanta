@@ -823,6 +823,12 @@ function ReviewsSection() {
         </div>
         
         <ReviewCarousel />
+        
+        <div className="text-center mt-8">
+          <a href="/reviews" className="inline-flex items-center gap-2 px-6 py-3 bg-santa-red text-white font-semibold rounded-xl hover:bg-red-700 transition-colors">
+            ⭐ Leave a Review
+          </a>
+        </div>
       </div>
     </section>
   )
