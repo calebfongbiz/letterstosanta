@@ -123,7 +123,7 @@ export default function AdminPage() {
               <div key={c.id} className="bg-white rounded-2xl p-6 shadow-sm">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="font-bold text-lg">{c.firstName} {c.lastName}</h3>
+                    <h3 className="font-bold text-lg text-gray-900">{c.firstName} {c.lastName}</h3>
                     <p className="text-gray-600">{c.email}</p>
                   </div>
                   <div className="text-right">
@@ -134,7 +134,7 @@ export default function AdminPage() {
                 {c.children.map((child) => (
                   <div key={child.id} className="border-t pt-4 mt-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-semibold">{child.name}, age {child.age}</span>
+                      <span className="font-semibold text-gray-900">{child.name}, age {child.age}</span>
                       <span className="text-sm text-gray-500">Tracker: {child.trackerId}</span>
                     </div>
                     <p className="text-sm text-gray-600 mb-1"><strong>Milestone:</strong> {child.currentMilestone.replace(/_/g, ' ')}</p>
@@ -160,7 +160,7 @@ export default function AdminPage() {
                   <div className="flex-grow">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-bold">{r.name}</h3>
+                        <h3 className="font-bold text-gray-900">{r.name}</h3>
                         <p className="text-gray-500 text-sm">{new Date(r.createdAt).toLocaleDateString()}</p>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-sm font-semibold ${r.approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
