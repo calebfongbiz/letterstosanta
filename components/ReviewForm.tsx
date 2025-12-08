@@ -98,7 +98,7 @@ export default function ReviewForm({ onSuccess, onClose }: ReviewFormProps) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-santa-red focus:border-transparent"
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-santa-red focus:border-transparent"
           placeholder="Jane D."
         />
       </div>
@@ -110,7 +110,7 @@ export default function ReviewForm({ onSuccess, onClose }: ReviewFormProps) {
           onChange={(e) => setComment(e.target.value)}
           required
           rows={4}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-santa-red focus:border-transparent resize-none"
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-santa-red focus:border-transparent resize-none"
           placeholder="Tell us about your magical experience..."
         />
       </div>

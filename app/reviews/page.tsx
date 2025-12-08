@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function ReviewsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white py-16">
+    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white pt-24 pb-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
