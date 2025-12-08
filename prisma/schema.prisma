@@ -125,3 +125,20 @@ model Letter {
 
   @@index([childId])
 }
+
+// Review represents a customer testimonial with optional photo
+model Review {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Reviewer info
+  name     String
+  comment  String
+  photoUrl String? // Optional photo URL
+
+  // Moderation
+  approved Boolean @default(false)
+
+  @@index([approved])
+}

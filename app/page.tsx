@@ -7,6 +7,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import {
+  ReviewCarousel,
   Button,
   Card,
 } from '@/components'
@@ -28,6 +29,9 @@ export default function HomePage() {
 
       {/* Tracker Preview */}
       <TrackerPreviewSection />
+
+      {/* Reviews */}
+      <ReviewsSection />
 
       {/* Pricing */}
       <PricingSection />
@@ -799,6 +803,26 @@ function FinalCtaSection() {
             </Link>
           </div>
         </div>
+      </div>
+    </section>
+  )
+}
+
+// Reviews Section with carousel
+function ReviewsSection() {
+  return (
+    <section id="reviews" className="py-20 md:py-32 bg-gradient-to-b from-white to-red-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            ❤️ Loved by Families
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            See what parents are saying about their magical experience
+          </p>
+        </div>
+        
+        <ReviewCarousel />
       </div>
     </section>
   )
