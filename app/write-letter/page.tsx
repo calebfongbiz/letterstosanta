@@ -212,6 +212,24 @@ export default function WriteLetterPage() {
             </p>
           </div>
 
+          {/* Download Template */}
+          <Card variant="glass" className="p-6 mb-8 text-center">
+            <div className="text-4xl mb-3">📝</div>
+            <h3 className="font-display text-lg font-semibold text-snow-cream mb-2">
+              Free Printable Letter Template
+            </h3>
+            <p className="text-snow-cream/70 text-sm mb-4">
+              Download our official letter template, have your child write their letter by hand, then fill out the form below!
+            </p>
+            <a
+              href="/letter-template.pdf"
+              download="Letter-to-Santa-Template.pdf"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-santa-red hover:bg-santa-red/90 text-white font-semibold rounded-xl transition-all"
+            >
+              <span>⬇️</span> Download Template (PDF)
+            </a>
+          </Card>
+
           {/* Tier selector */}
           <Card variant="glass" className="p-4 mb-8">
             <div className="flex flex-col sm:flex-row gap-4">
