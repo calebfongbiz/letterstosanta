@@ -1,4 +1,4 @@
-/**
+open app/page.tsx^X^^X6x/**
  * Landing Page
  * 
  * Redesigned with warm Santa hero image background and new 2-tier pricing.
@@ -464,7 +464,7 @@ function PricingSection() {
         '✅ Everything in the Free tier, PLUS...',
         '🎬 Magical Video Updates - watch Jingles the Elf carry your letter through 5 stunning locations to the North Pole!',
         '🎅 Personalized Letter FROM Santa - mentions your child by name, their wishes, and good deeds!',
-        '📜 Official Nice List Certificate - frameable keepsake with your child\'s name!',
+        '📜 Official Nice List Certificate - frameable keepsake with your child's name!',
         'Add extra children (+$0.99 each)',
       ],
       ctaText: 'Get the Magic ✨',
