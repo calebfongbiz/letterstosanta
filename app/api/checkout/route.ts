@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate price
-    const basePrice = 799 // $7.99 in cents
+    const basePrice = 499 // $7.99 in cents
     const extraChildPrice = 99 // $0.99 in cents
     const extraChildren = Math.max(0, childrenCount - 1)
     const totalPrice = basePrice + (extraChildren * extraChildPrice)

@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate upgrade price - full price since upgrading from FREE
-    const upgradePrice = 799 // $7.99 in cents
+    const upgradePrice = 499 // $7.99 in cents
 
     // Create Stripe Checkout session
     const session = await stripe.checkout.sessions.create({

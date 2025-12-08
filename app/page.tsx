@@ -460,7 +460,7 @@ function PricingSection() {
     },
     {
       name: "🎄 Santa's Magic",
-      price: 7.99,
+      price: 4.99,
       extraChildPrice: 0.99,
       description: 'The ULTIMATE Christmas experience your kids will never forget',
       tier: 'MAGIC' as const,
