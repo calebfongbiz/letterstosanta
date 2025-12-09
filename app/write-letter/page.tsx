@@ -254,7 +254,7 @@ export default function WriteLetterPage() {
                 }`}
               >
                 <div className="font-semibold text-snow-cream">Santa&apos;s Magic ✨</div>
-                <div className="text-gold font-bold">$7.99</div>
+                <div className="text-gold font-bold">$4.99</div>
                 <div className="text-snow-cream/50 text-xs mt-1">Flight tracker + Santa reply + certificate</div>
               </button>
             </div>
