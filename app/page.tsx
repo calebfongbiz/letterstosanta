@@ -62,7 +62,7 @@ function HeroSection() {
           src="/santa-hero.png"
           alt="Santa reading a letter"
           fill
-          className="object-contain md:object-cover object-top md:object-center"
+          className="object-cover object-right md:object-center"
           priority
           quality={90}
         />
