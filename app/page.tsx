@@ -62,7 +62,7 @@ function HeroSection() {
           src="/santa-hero.png"
           alt="Santa reading a letter"
           fill
-          className="object-cover object-right md:object-center"
+          className="object-cover object-[80%] md:object-center"
           priority
           quality={90}
         />
@@ -97,7 +97,7 @@ function HeroSection() {
           </p>
 
           {/* Main headline */}
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+          <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6 leading-none md:leading-tight">
             Create a Christmas{' '}
             <span className="text-santa-red">Tradition</span> They&apos;ll Remember Forever
           </h1>
