@@ -62,7 +62,7 @@ function HeroSection() {
           src="/santa-hero.png"
           alt="Santa reading a letter"
           fill
-          className="object-cover object-center"
+          className="object-cover object-[center_top] md:object-center"
           priority
           quality={90}
         />
@@ -89,7 +89,7 @@ function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32 md:pt-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-36 md:pt-20">
         <div className="max-w-2xl">
           {/* Trust line */}
           <p className="text-white/80 text-sm mb-4 font-medium">
