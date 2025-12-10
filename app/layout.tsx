@@ -39,6 +39,11 @@ export default function RootLayout({
         <MetaPixel />
         
         {/* Navigation */}
+        <div className="bg-gradient-to-r from-red-700 via-red-600 to-red-700 text-white py-3 px-4 text-center">
+          <p className="text-sm md:text-base font-medium">
+            🎅 <span className="font-bold">Parents!</span> You have until December 20th to send a letter, watch it travel through magical locations, and get a personalized letter back from Santa! ✨
+          </p>
+        </div>
         <Navbar />
 
         {/* Main content */}
