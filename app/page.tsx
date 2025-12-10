@@ -55,7 +55,7 @@ export default function HomePage() {
 // ============================================
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden -mt-28 md:-mt-32">
+    <section className="relative min-h-[85vh] md:min-h-screen flex items-center overflow-hidden -mt-28 md:-mt-32">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
