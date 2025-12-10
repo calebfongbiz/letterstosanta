@@ -89,7 +89,7 @@ function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32 md:pt-20">
         <div className="max-w-2xl">
           {/* Trust line */}
           <p className="text-white/80 text-sm mb-4 font-medium">
@@ -103,8 +103,8 @@ function HeroSection() {
           </h1>
 
           {/* Rhyming description in frosted glass box */}
-          <div className="bg-black/60 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20 w-fit">
-            <p className="text-white/90 text-lg leading-relaxed">
+          <div className="bg-black/60 backdrop-blur-md rounded-2xl p-4 md:p-6 mb-6 md:mb-8 border border-white/20 w-fit">
+            <p className="text-white/90 text-sm md:text-lg leading-relaxed">
               Your child writes a letter with wonder and cheer...
               <br />
               Then tracks where it travels as Christmas draws near...
