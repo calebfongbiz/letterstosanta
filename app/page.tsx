@@ -89,7 +89,7 @@ function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-36 md:pt-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-40 md:pt-20">
         <div className="max-w-2xl">
           {/* Trust line */}
           <p className="text-white/80 text-sm mb-4 font-medium">
